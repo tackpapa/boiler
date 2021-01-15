@@ -1,15 +1,17 @@
 import db from 'db';
 import Koa  from 'koa';
+import {Controller} from './types'
 
-const create = (ctx:Koa.Context) => {
 
-    const { email, password } = ctx.request.body
+const create:Controller = (ctx) => {
+    const { email, password } = ctx.request.body;
     db.users.create({
         email,
         password
     });
-    ctx.body = {
-        
-    }
+
+    ctx.status = 200
 
 }
+
+export default {create}

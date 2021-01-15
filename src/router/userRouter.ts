@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import UserController from 'controllers/UserController'
+import UserController from 'controllers/userController'
 
 const router = new Router({
     prefix: '/user',
@@ -7,7 +7,6 @@ const router = new Router({
 
 router.post('/create', UserController.create)
 
-router.post('/hire', RequireAuth, UserController.hire)
 
 
 export default router;
