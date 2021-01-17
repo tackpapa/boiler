@@ -4,13 +4,15 @@ import { isConstructSignatureDeclaration } from 'typescript';
 const PostSchema: Schema = new mongoose.Schema(
   {
     author: {
-      type: mongoose.Schema.Types,
-      Object,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
     context: String,
     pic: String,
-    tags: [],
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
