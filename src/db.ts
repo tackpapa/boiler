@@ -3,6 +3,7 @@ import users from './models/users';
 import posts from './models/posts';
 import comments from './models/comments';
 import sessions from './models/sessions';
+mongoose.set('useCreateIndex', true);
 
 mongoose.connect(process.env.MONGO_URL!, {
   useNewUrlParser: true,

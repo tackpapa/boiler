@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { createTextChangeRange } from 'typescript';
-const { generateToken } = require('../lib/token');
-mongoose.set('useCreateIndex', true);
+import jwt from 'utils/jwt';
 
 const UserSchema: Schema = new mongoose.Schema(
   {
