@@ -18,16 +18,16 @@ app
     .use(koaHelmet())
     .use(session(app))
     .use(koaCors())
-    .use(mongo({
-        host: 'localhost',
-        port: 27017,
-        user: 'admin',
-        pass: '123456',
-        db: 'test',
-        authSource: 'admin',
-        max: 100,
-        min: 1,
-      }))    
+    // .use(mongo({
+    //     host: 'localhost',
+    //     port: 27019,
+    //     user: 'admin',
+    //     pass: '123456',
+    //     db: 'test',
+    //     authSource: 'admin',
+    //     max: 100,
+    //     min: 1,
+    //   }))    
 
 
 app.use(async ctx => {
