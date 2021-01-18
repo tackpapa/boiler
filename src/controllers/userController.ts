@@ -1,8 +1,11 @@
 import db from 'db';
 import { Controller } from './types';
 const crypto = require('crypto');
-import jwt from 'koa-jwt';
 import { Joi } from 'koa-joi-router';
+import generateToken from 'utils/jwt';
+import upload from '../utils/s3';
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
 
 const hash: Controller = (_password: any) => {
   return crypto
@@ -21,28 +24,25 @@ const create: Controller = async (ctx) => {
   var pattern = /\S+@\S+\.\S+/;
   const emailVal = pattern.test(email);
   if (emailVal === false) {
-    return (ctx.status = 403);
+    ctx.status = 400;
+    return;
+  }
+  const hashed = hash(password);
+  const man = await db.users.findOne({ email });
+  if (man) {
+    ctx.status = 403;
   } else {
-    const hashed = hash(password);
-    const man = await db.users.findOne({ email }).exec();
-    if (man) {
-      ctx.status = 403;
-    } else {
-      await db.users.create({
-        email,
-        password: hashed,
-        name,
-        cell,
-      });
-      ctx.status = 200;
-      const user1 = await db.users
-        .findOne({
-          email,
-        })
-        .exec();
-      ctx.body = user1;
-      console.log('user created', ctx.request.body);
-    }
+    await db.users.create({
+      email,
+      password: hashed,
+      name,
+      cell,
+    });
+    ctx.status = 200;
+    const user1 = await db.users.findOne({
+      email,
+    });
+    ctx.body = user1;
   }
 };
 
@@ -63,7 +63,6 @@ const login: Controller = async (ctx) => {
     });
   let user: any = null;
   try {
-    // 이메일로 계정 찾기
     user = await db.users.findOne({ email });
   } catch (e) {
     ctx.throw(500, e);
@@ -72,30 +71,25 @@ const login: Controller = async (ctx) => {
     // 유저가 존재하지 않거나 || 비밀번호가 일치하지 않으면
     ctx.status = 403; // Forbidden
     return;
-  } else {
-    ctx.status = 200;
-    console.log('logging in', user.email);
-    return (ctx.status = 200);
   }
+  ctx.status = 200;
+  const token = await generateToken({ _id: user.id, email: user.email });
+  ctx.body = token;
+  return;
 };
 
 const update: Controller = async (ctx) => {
   const { email, password, name, cell } = ctx.request.body;
   const hashed = hash(password);
-  const man = await db.users
-    .findOneAndUpdate({ email, password, name, cell })
-    .exec();
-  // const updated = await db.users.findOne({ email }).exec();
-  // console.log('updated', updated);  업뎃됬는지 확인용 코드
+  await db.users.findOneAndUpdate({ email }, { password: hashed, name, cell });
   ctx.status = 200;
 };
 
 const deleteone: Controller = async (ctx) => {
-  const { email, password } = ctx.request.body;
+  const { email } = ctx.request.body;
   await login(ctx);
   if (ctx.status === 200) {
-    const del = db.users.deleteOne({ email });
-    ctx.status === 200;
+    db.users.deleteOne({ email });
     console.log(email, ' user deleted');
   } else {
     console.log('user already gone');
@@ -104,14 +98,38 @@ const deleteone: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  console.log('요기까지', ctx.params.id);
   const user = await db.users.findOne({ _id: id });
   ctx.status = 200;
   ctx.body = user;
 };
 
-const logout: Controller = async (ctx) => {
-  const { email, password } = ctx.request.body;
+const uploadProfile: Controller = async (ctx) => {
+  const user: any = await db.users.findOne({ _id: ctx.state.user._id });
+  const { path } = ctx.request.files.profilepic;
+  const body = fs.createReadStream(path);
+  const param = {
+    Bucket: process.env.pjt_name,
+    Key: `image/${user._id}`,
+    ACL: 'public-read',
+    Body: body,
+    ContentType: 'image/png',
+  };
+  const up = await upload(param);
+  (user as any).profilepic = up.Location;
+  user.save();
+  ctx.status = 200;
 };
 
-export default { create, login, update, deleteone, findone, logout };
+const logout: Controller = (ctx) => {
+  ctx.status = 200;
+};
+
+export default {
+  create,
+  login,
+  update,
+  deleteone,
+  findone,
+  logout,
+  uploadProfile,
+};

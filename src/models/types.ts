@@ -1,7 +1,6 @@
 import { Model, Document } from 'mongoose';
 
 export interface User extends LocalRegisterPayload {
-  password: string;
   hash: string;
   salt: string;
 }

@@ -3,6 +3,7 @@ import { isConstructSignatureDeclaration } from 'typescript';
 
 const PostSchema: Schema = new mongoose.Schema(
   {
+    title: String,
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',

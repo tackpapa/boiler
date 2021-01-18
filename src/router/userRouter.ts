@@ -11,5 +11,6 @@ router.post('/login', UserController.login);
 router.post('/update', UserController.update);
 router.post('/deleteuser', UserController.deleteone);
 router.get('/logout', UserController.logout);
+router.post('/uploadProfile', UserController.uploadProfile);
 
 export default router;
