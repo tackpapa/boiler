@@ -23,7 +23,6 @@ const create: Controller = async (ctx) => {
     tags: newtag,
     price,
   });
-  console.log('sdfsdfsdfsdf>>>>>>>>>>>>>>', item);
   var arr = [];
 
   var arr = [ctx.request.files.pic.path, ctx.request.files.pic2.path];
@@ -36,12 +35,9 @@ const create: Controller = async (ctx) => {
       ContentType: 'image/png',
     };
     const lala = await upload(param);
-
     await (item as any).pics.push(lala.Location);
   }
-
   item.save();
-  console.log('item', item);
   ctx.status = 200;
 };
 

@@ -2,7 +2,6 @@ import db from 'db';
 import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
-import { isNamedExports } from 'typescript';
 
 const viewCount: Controller = async (id) => {
   const viewUp = await db.posts.findByIdAndUpdate(
@@ -25,16 +24,6 @@ const create: Controller = async (ctx) => {
     location,
   });
   var arr = [];
-
-  // if (ctx.request.files.pic.path) {
-  //   arr.push(ctx.request.files.pic.path);
-  // }
-  // if (ctx.request.files.pic2.path) {
-  //   arr.push(ctx.request.files.pic2.path);
-  // }
-  // if (ctx.request.files.pic3.path) {
-  //   arr.push(ctx.request.files.pic3.path);
-  // }
 
   var arr = [ctx.request.files.pic.path, ctx.request.files.pic2.path];
   for (var val of arr) {
