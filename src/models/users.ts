@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import { createTextChangeRange } from 'typescript';
-import jwt from 'utils/jwt';
 
 const UserSchema: Schema = new mongoose.Schema(
   {

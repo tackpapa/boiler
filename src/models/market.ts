@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { isConstructSignatureDeclaration } from 'typescript';
 
-const PostSchema: Schema = new mongoose.Schema(
+const MarketSchema: Schema = new mongoose.Schema(
   {
     title: String,
     author: {
@@ -16,13 +16,12 @@ const PostSchema: Schema = new mongoose.Schema(
     },
     job: Boolean,
     free: Boolean,
-    views: Number,
   },
   {
     timestamps: true,
   }
 );
 
-const model = mongoose.model('Posts', PostSchema);
+const model = mongoose.model('Markets', MarketSchema);
 
 export default model;

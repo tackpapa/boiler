@@ -1,38 +1,35 @@
 import db from 'db';
-import {Controller} from './types'
+import { Controller } from './types';
 
+const create: Controller = async (ctx) => {
+  const { text, post } = ctx.request.body;
+  const author = ctx.state.user._id;
+  const comment = await db.comments.create({
+    text,
+    author,
+    post,
+  });
+  ctx.status = 200;
+};
 
-const create:Controller = (ctx) => {
-    const { email, password } = ctx.request.body;
-    db.users.create({
-        email,
-        password
-    });
+const update: Controller = async (ctx) => {
+  const id = ctx.params.id;
+  const { text } = ctx.request.body;
+  const up = await db.comments.findOneAndUpdate(
+    { _id: id },
+    {
+      text,
+    }
+  );
+  ctx.status = 200;
+};
 
-    ctx.body = 'hello world'
+const deleteone: Controller = async (ctx) => {
+  const id = ctx.params.id;
+  const del = await db.comments.findOneAndDelete({
+    _id: id,
+  });
+  ctx.status = 200;
+};
 
-}
-
-const update:Controller = (ctx) => {
-    const { email, password } = ctx.request.body;
-    db.users.create({
-        email,
-        password
-    });
-
-    ctx.body = 'hello world'
-
-}
-
-const deleteone:Controller = (ctx) => {
-    const { email, password } = ctx.request.body;
-    db.users.create({
-        email,
-        password
-    });
-
-    ctx.body = 'hello world'
-
-}
-
-export default {create, deleteone, update}
+export default { create, deleteone, update };

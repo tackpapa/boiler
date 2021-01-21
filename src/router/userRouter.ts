@@ -1,5 +1,6 @@
 import Router from 'koa-router';
 import UserController from 'controllers/userController';
+import { requireAuth } from 'utils/jwt';
 
 const router = new Router({
   prefix: '/user',

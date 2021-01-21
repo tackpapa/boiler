@@ -5,18 +5,12 @@ import { Joi } from 'koa-joi-router';
 import generateToken from 'utils/jwt';
 import upload from '../utils/s3';
 import fs from 'fs';
-import jwt from 'jsonwebtoken';
 
 const hash: Controller = (_password: any) => {
   return crypto
     .createHash('sha256', process.env.SECRET_KEY)
     .update(_password)
     .digest('hex');
-};
-
-const validatePassword = function (password: any) {
-  const hashed = hash(password);
-  return hashed;
 };
 
 const create: Controller = async (ctx) => {
@@ -68,7 +62,6 @@ const login: Controller = async (ctx) => {
     ctx.throw(500, e);
   }
   if (!user || user.password !== `${hashed}`) {
-    // 유저가 존재하지 않거나 || 비밀번호가 일치하지 않으면
     ctx.status = 403; // Forbidden
     return;
   }
@@ -109,7 +102,7 @@ const uploadProfile: Controller = async (ctx) => {
   const body = fs.createReadStream(path);
   const param = {
     Bucket: process.env.pjt_name,
-    Key: `image/${user._id}`,
+    Key: `profileimage/${user._id}`,
     ACL: 'public-read',
     Body: body,
     ContentType: 'image/png',

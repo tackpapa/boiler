@@ -10,7 +10,7 @@ const CommentSchema: Schema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Posts',
     },
-    context: String,
+    text: String,
   },
   {
     timestamps: true,

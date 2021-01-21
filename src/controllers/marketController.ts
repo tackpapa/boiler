@@ -3,14 +3,6 @@ import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
 
-const viewCount: Controller = async (id) => {
-  const viewUp = await db.posts.findByIdAndUpdate(
-    { _id: id },
-    { $inc: { views: +1 } }
-  );
-  await viewUp?.save();
-};
-
 const create: Controller = async (ctx) => {
   const { title, context, tags } = ctx.request.body;
   const author = ctx.state.user._id;
@@ -21,13 +13,12 @@ const create: Controller = async (ctx) => {
     author,
     tags: newtag,
   });
-  console.log(ctx.request.files);
+  console.log(item);
   const { path } = ctx.request.files.pic;
-  const { path2 } = ctx.request.files.pic2;
   const body = fs.createReadStream(path);
   const param = {
     Bucket: process.env.pjt_name,
-    Key: `image/${item._id}`,
+    Key: `marketimage/${item._id}`,
     ACL: 'public-read',
     Body: body,
     ContentType: 'image/png',
@@ -53,7 +44,6 @@ const update: Controller = async (ctx) => {
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post = await db.posts.findOne({ _id: id });
-  viewCount(id);
   ctx.status = 200;
   ctx.body = post;
 };
