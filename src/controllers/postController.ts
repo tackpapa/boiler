@@ -21,9 +21,8 @@ const create: Controller = async (ctx) => {
     author,
     tags: newtag,
   });
-  console.log(ctx.request.files);
+
   const { path } = ctx.request.files.pic;
-  const { path2 } = ctx.request.files.pic2;
   const body = fs.createReadStream(path);
   const param = {
     Bucket: process.env.pjt_name,

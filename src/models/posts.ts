@@ -14,8 +14,8 @@ const PostSchema: Schema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    job: Boolean,
-    free: Boolean,
+    isjob: Boolean,
+    location: String,
     views: Number,
   },
   {

@@ -14,8 +14,8 @@ const MarketSchema: Schema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    job: Boolean,
-    free: Boolean,
+    views: Number,
+    price: Number,
   },
   {
     timestamps: true,
