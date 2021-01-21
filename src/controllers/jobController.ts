@@ -15,7 +15,7 @@ const create: Controller = async (ctx) => {
   const { title, context, tags, location } = ctx.request.body;
   const author = ctx.state.user._id;
   const newtag = JSON.parse(tags);
-  const item = await db.posts.create({
+  const item = await db.jobs.create({
     title,
     context,
     author,
@@ -28,7 +28,7 @@ const create: Controller = async (ctx) => {
   for (var val of arr) {
     var param = {
       Bucket: 'ridasprod',
-      Key: `postimage/${item._id + Math.random()}`,
+      Key: `jobimage/${item._id + Math.random()}`,
       ACL: 'public-read',
       Body: await fs.createReadStream(val),
       ContentType: 'image/png',
@@ -38,16 +38,15 @@ const create: Controller = async (ctx) => {
   }
 
   item.save();
-  console.log('item', item);
   ctx.status = 200;
 };
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags, isjob, location } = ctx.request.body;
+  const { context, title, tags, location } = ctx.request.body;
   const newtag = JSON.parse(tags);
   const author = ctx.state.user._id;
-  const post = await db.posts.findOneAndUpdate(
+  const post = await db.jobs.findOneAndUpdate(
     { _id: id },
     {
       context: context,
@@ -62,21 +61,21 @@ const update: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.posts.findOne({ _id: id });
+  const post = await db.jobs.findOne({ _id: id });
   viewCount(id);
   ctx.status = 200;
   ctx.body = post;
 };
 
 const latest: Controller = async (ctx) => {
-  const posts = await db.posts.find().sort({ _id: -1 }).limit(20);
+  const posts = await db.jobs.find().sort({ _id: -1 }).limit(20);
   ctx.status = 200;
   ctx.body = posts;
 };
 
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.posts.findOneAndRemove({ _id: id });
+  const post = await db.jobs.findOneAndRemove({ _id: id });
   ctx.status = 200;
 };
 
