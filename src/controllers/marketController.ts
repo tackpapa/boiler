@@ -13,38 +13,46 @@ const viewCount: Controller = async (id) => {
 
 const create: Controller = async (ctx) => {
   const { title, context, tags, price } = ctx.request.body;
+  console.log(ctx.request.body);
   const author = ctx.state.user._id;
   const newtag = JSON.parse(tags);
   const item = await db.markets.create({
     title,
     context,
     author,
-    price,
     tags: newtag,
+    price,
   });
-  const { path } = ctx.request.files.pic;
-  const body = fs.createReadStream(path);
-  const param = {
-    Bucket: process.env.pjt_name,
-    Key: `marketimage/${item._id}`,
-    ACL: 'public-read',
-    Body: body,
-    ContentType: 'image/png',
-  };
-  const up = await upload(param);
-  (item as any).pic = up.Location;
+  console.log('sdfsdfsdfsdf>>>>>>>>>>>>>>', item);
+  var arr = [];
+
+  var arr = [ctx.request.files.pic.path, ctx.request.files.pic2.path];
+  for (var val of arr) {
+    var param = {
+      Bucket: 'ridasprod',
+      Key: `marketimage/${item._id + Math.random()}`,
+      ACL: 'public-read',
+      Body: await fs.createReadStream(val),
+      ContentType: 'image/png',
+    };
+    const lala = await upload(param);
+
+    await (item as any).pics.push(lala.Location);
+  }
+
   item.save();
+  console.log('item', item);
   ctx.status = 200;
 };
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags } = ctx.request.body;
+  const { context, title, tags, price } = ctx.request.body;
   const newtag = JSON.parse(tags);
   const author = ctx.state.user._id;
   const post = await db.markets.findOneAndUpdate(
     { _id: id },
-    { context: context, tags: newtag, title: title }
+    { context: context, tags: newtag, title: title, price: price }
   );
   ctx.status = 200;
 };

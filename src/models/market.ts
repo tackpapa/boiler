@@ -9,7 +9,10 @@ const MarketSchema: Schema = new mongoose.Schema(
       ref: 'Users',
     },
     context: String,
-    pic: String,
+    pics: {
+      type: [String],
+      default: [],
+    },
     tags: {
       type: [String],
       default: [],

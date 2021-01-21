@@ -2,6 +2,7 @@ import db from 'db';
 import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
+import { isNamedExports } from 'typescript';
 
 const viewCount: Controller = async (id) => {
   const viewUp = await db.posts.findByIdAndUpdate(
@@ -12,7 +13,7 @@ const viewCount: Controller = async (id) => {
 };
 
 const create: Controller = async (ctx) => {
-  const { title, context, tags } = ctx.request.body;
+  const { title, context, tags, isjob, location } = ctx.request.body;
   const author = ctx.state.user._id;
   const newtag = JSON.parse(tags);
   const item = await db.posts.create({
@@ -20,32 +21,55 @@ const create: Controller = async (ctx) => {
     context,
     author,
     tags: newtag,
+    isjob,
+    location,
   });
+  var arr = [];
 
-  const { path } = ctx.request.files.pic;
-  const body = fs.createReadStream(path);
-  const param = {
-    Bucket: process.env.pjt_name,
-    Key: `image/${item._id}`,
-    ACL: 'public-read',
-    Body: body,
-    ContentType: 'image/png',
-  };
-  const up = await upload(param);
-  (item as any).pic = up.Location;
+  // if (ctx.request.files.pic.path) {
+  //   arr.push(ctx.request.files.pic.path);
+  // }
+  // if (ctx.request.files.pic2.path) {
+  //   arr.push(ctx.request.files.pic2.path);
+  // }
+  // if (ctx.request.files.pic3.path) {
+  //   arr.push(ctx.request.files.pic3.path);
+  // }
+
+  var arr = [ctx.request.files.pic.path, ctx.request.files.pic2.path];
+  for (var val of arr) {
+    var param = {
+      Bucket: 'ridasprod',
+      Key: `postimage/${item._id + Math.random()}`,
+      ACL: 'public-read',
+      Body: await fs.createReadStream(val),
+      ContentType: 'image/png',
+    };
+    const lala = await upload(param);
+    await (item as any).pics.push(lala.Location);
+  }
+
   item.save();
+  console.log('item', item);
   ctx.status = 200;
 };
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags } = ctx.request.body;
+  const { context, title, tags, isjob, location } = ctx.request.body;
   const newtag = JSON.parse(tags);
   const author = ctx.state.user._id;
   const post = await db.posts.findOneAndUpdate(
     { _id: id },
-    { context: context, tags: newtag, title: title }
+    {
+      context: context,
+      tags: newtag,
+      title: title,
+      isjob: isjob,
+      location: location,
+    }
   );
+  (post as any).save();
   ctx.status = 200;
 };
 
