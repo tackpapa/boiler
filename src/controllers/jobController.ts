@@ -3,14 +3,6 @@ import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
 
-const viewCount: Controller = async (id) => {
-  const viewUp = await db.posts.findByIdAndUpdate(
-    { _id: id },
-    { $inc: { views: +1 } }
-  );
-  await viewUp?.save();
-};
-
 const create: Controller = async (ctx) => {
   const { title, context, tags, location } = ctx.request.body;
   const author = ctx.state.user._id;
@@ -62,7 +54,7 @@ const update: Controller = async (ctx) => {
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post = await db.jobs.findOne({ _id: id });
-  viewCount(id);
+  post?.viewUp();
   ctx.status = 200;
   ctx.body = post;
 };

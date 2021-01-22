@@ -1,6 +1,22 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-const JobSchema: Schema = new mongoose.Schema(
+export interface Job {
+  title: string;
+  author: string;
+  context: string;
+  pics: string[];
+  tags: string[];
+  views: number;
+  location: number;
+}
+
+export interface JobDocument extends Job, Document {
+  //method를 넣는다
+  viewUp: () => void;
+}
+export interface JobModel extends Model<JobDocument> {}
+
+const JobSchema: Schema<JobDocument> = new mongoose.Schema(
   {
     title: String,
     author: {
@@ -23,7 +39,10 @@ const JobSchema: Schema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-const model = mongoose.model('Jobs', JobSchema);
+JobSchema.methods.viewUp = async function () {
+  this.views += 1;
+  this.save();
+};
+const model = mongoose.model<JobDocument, JobModel>('Jobs', JobSchema);
 
 export default model;

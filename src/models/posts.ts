@@ -1,7 +1,22 @@
-import mongoose, { Schema } from 'mongoose';
-import { isConstructSignatureDeclaration } from 'typescript';
+import mongoose, { Schema, Model, Document } from 'mongoose';
 
-const PostSchema: Schema = new mongoose.Schema(
+export interface Post {
+  title: string;
+  author: string;
+  context: string;
+  pics: string[];
+  tags: string[];
+  views: number;
+}
+
+export interface PostDocument extends Post, Document {
+  //method를 넣는다
+  viewUp: () => void;
+}
+
+export interface PostModel extends Model<PostDocument> {}
+
+const PostSchema: Schema<PostDocument> = new mongoose.Schema(
   {
     title: String,
     author: {
@@ -17,8 +32,6 @@ const PostSchema: Schema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    isjob: Boolean,
-    location: String,
     views: Number,
   },
   {
@@ -26,6 +39,11 @@ const PostSchema: Schema = new mongoose.Schema(
   }
 );
 
-const model = mongoose.model('Posts', PostSchema);
+PostSchema.methods.viewUp = async function () {
+  this.views += 1;
+  this.save();
+};
+
+const model = mongoose.model<PostDocument, PostModel>('Posts', PostSchema);
 
 export default model;

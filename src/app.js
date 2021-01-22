@@ -6,6 +6,8 @@ import router from './router/route';
 const dotenv = require('dotenv');
 import path from 'path';
 import { jwtParser } from 'utils/jwt';
+import socket from './socket';
+import http from 'http';
 
 dotenv.config({
   path: path.join(process.cwd(), `.env.${process.env.NODE_ENV}`),
@@ -21,10 +23,12 @@ app
   .use(koaCors())
   .use(router.routes());
 
-function Listening() {
-  console.log(`listening now at port`, process.env.PORT);
-}
-
 app.listen(process.env.PORT, Listening);
+function Listening() {
+  console.log(`♥️♥️♥️♥️♥️listening now at port`, process.env.PORT);
+}
+// const server = http.createServer(app.callback());
+// socket(server);
+// server.listen(process.env.PORT);
 
-// ctx.request.files form data가여기들어있음.
+// 채팅세션, 노티피케이션클라, 보배같은 포인트 상승 로직, 어드민 로그인, 모델 리모델링

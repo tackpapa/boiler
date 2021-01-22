@@ -15,7 +15,7 @@ const tag: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
-const hotPost: Controller = async (ctx) => {
+const hotPosts: Controller = async (ctx) => {
   const posts = await db.posts
     .find()
     .sort({ views: -1 })
@@ -24,4 +24,32 @@ const hotPost: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
-export default { home, tag, hotPost };
+const jobs: Controller = async (ctx) => {
+  const jobs = await db.jobs.find().sort({ _id: -1 }).limit(20);
+  ctx.body = jobs;
+};
+
+const hotJobs: Controller = async (ctx) => {
+  const jobs = await db.jobs
+    .find()
+    .sort({ views: -1 })
+    .sort({ _id: -1 })
+    .limit(20);
+  ctx.body = jobs;
+};
+
+const products: Controller = async (ctx) => {
+  const products = await db.markets.find().sort({ _id: -1 }).limit(20);
+  ctx.body = products;
+};
+
+const hotProducts: Controller = async (ctx) => {
+  const products = await db.markets
+    .find()
+    .sort({ views: -1 })
+    .sort({ _id: -1 })
+    .limit(20);
+  ctx.body = products;
+};
+
+export default { home, tag, hotPosts, jobs, hotJobs, products, hotProducts };

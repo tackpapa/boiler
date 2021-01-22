@@ -1,7 +1,22 @@
-import mongoose, { Schema } from 'mongoose';
-import { isConstructSignatureDeclaration } from 'typescript';
+import mongoose, { Schema, Model, Document } from 'mongoose';
 
-const MarketSchema: Schema = new mongoose.Schema(
+export interface Market {
+  title: string;
+  author: string;
+  context: string;
+  pics: string[];
+  tags: string[];
+  views: number;
+  price: number;
+}
+
+export interface MarketDocument extends Market, Document {
+  //method를 넣는다
+  viewUp: () => void;
+}
+export interface MarketModel extends Model<MarketDocument> {}
+
+const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
   {
     title: String,
     author: {
@@ -25,6 +40,13 @@ const MarketSchema: Schema = new mongoose.Schema(
   }
 );
 
-const model = mongoose.model('Markets', MarketSchema);
+MarketSchema.methods.viewUp = async function () {
+  this.views += 1;
+  this.save();
+};
+const model = mongoose.model<MarketDocument, MarketModel>(
+  'Markets',
+  MarketSchema
+);
 
 export default model;

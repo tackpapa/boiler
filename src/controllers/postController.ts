@@ -3,14 +3,6 @@ import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
 
-const viewCount: Controller = async (id) => {
-  const viewUp = await db.posts.findByIdAndUpdate(
-    { _id: id },
-    { $inc: { views: +1 } }
-  );
-  await viewUp?.save();
-};
-
 const create: Controller = async (ctx) => {
   const { title, context, tags, location } = ctx.request.body;
   const author = ctx.state.user._id;
@@ -22,23 +14,22 @@ const create: Controller = async (ctx) => {
     tags: newtag,
     location,
   });
-  var arr = [];
 
-  var arr = [ctx.request.files.pic.path, ctx.request.files.pic2.path];
-  for (var val of arr) {
-    var param = {
-      Bucket: 'ridasprod',
-      Key: `postimage/${item._id + Math.random()}`,
-      ACL: 'public-read',
-      Body: await fs.createReadStream(val),
-      ContentType: 'image/png',
-    };
-    const lala = await upload(param);
-    await (item as any).pics.push(lala.Location);
-  }
+  ctx.request.files.pic.forEach(
+    async ({ path }: { path: string }, i: number) => {
+      var param = {
+        Bucket: 'ridasprod',
+        Key: `postimage/${item._id + i}`,
+        ACL: 'public-read',
+        Body: await fs.createReadStream(path),
+        ContentType: 'image/png',
+      };
+      const lala = await upload(param);
+      await (item as any).pics.push(lala.Location);
+    }
+  );
 
   item.save();
-  console.log('item', item);
   ctx.status = 200;
 };
 
@@ -63,7 +54,7 @@ const update: Controller = async (ctx) => {
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post = await db.posts.findOne({ _id: id });
-  viewCount(id);
+  post?.viewUp();
   ctx.status = 200;
   ctx.body = post;
 };
