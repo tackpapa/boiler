@@ -14,6 +14,7 @@ const UserSchema: Schema = new mongoose.Schema(
       type: String,
       required: [true, "can't be blank"],
     },
+    exp: Number,
     password: String,
     cell: Number,
     kakaoid: String,

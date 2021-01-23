@@ -4,6 +4,11 @@ import { Controller } from './types';
 const create: Controller = async (ctx) => {
   const { text, post } = ctx.request.body;
   const author = ctx.state.user._id;
+  const user = await db.users.findOneAndUpdate(
+    { _id: author },
+    { $inc: { exp: +2 } }
+  );
+  user?.save();
   const comment = await db.comments.create({
     text,
     author,

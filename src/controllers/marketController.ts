@@ -7,6 +7,11 @@ const create: Controller = async (ctx) => {
   const { title, context, tags, price } = ctx.request.body;
   console.log(ctx.request.body);
   const author = ctx.state.user._id;
+  const user = await db.users.findOneAndUpdate(
+    { _id: author },
+    { $inc: { exp: +10 } }
+  );
+  user?.save();
   const newtag = JSON.parse(tags);
   const item = await db.markets.create({
     title,
