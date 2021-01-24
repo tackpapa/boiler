@@ -19,6 +19,6 @@
     "strictPropertyInitialization": false
   },
   "noEmit": true,
-  "include": ["src/**/*.ts", "src/db.ts", "src/socket.js"],
+  "include": ["src/**/*.ts", "src/db.ts", "src/socket.js", "src/app.js"],
   "exclude": ["node_modules/@types"]
 }

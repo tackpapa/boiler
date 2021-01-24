@@ -6,6 +6,7 @@ import marketRouter from './marketRouter';
 import apiRouter from './apiRouter';
 import bannerRouter from './bannerRouter';
 import jobRouter from './jobRouter';
+import tier from './../controllers/tier';
 
 const router = new Router();
 router.use(userRouter.routes());
@@ -17,7 +18,9 @@ router.use(bannerRouter.routes());
 router.use(jobRouter.routes());
 
 router.get('/', (ctx) => {
-  ctx.body = 'Home';
+  const _tier = tier(18992);
+  console.log(_tier);
+  ctx.body = _tier;
 });
 
 export default router;

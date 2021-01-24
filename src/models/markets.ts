@@ -24,6 +24,12 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       ref: 'Users',
     },
     context: String,
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comments',
+      },
+    ],
     pics: {
       type: [String],
       default: [],

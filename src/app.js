@@ -1,4 +1,4 @@
-const Koa = require('koa');
+const Koa = require('Koa');
 const bodyParser = require('koa-body');
 const koaCors = require('koa-cors');
 const koaHelmet = require('koa-helmet');
@@ -31,4 +31,4 @@ function Listening() {
 // socket(server);
 // server.listen(process.env.PORT);
 
-// 채팅세션, 노티피케이션클라, 보배같은 포인트 상승 로직, 어드민 로그인, 모델 리모델링
+// 채팅세션, 노티피케이션클라, 어드민 로그인, 몽고레플리카설정 마스터 슬레이브, 로그아웃로직, 세션 로그아웃 등등

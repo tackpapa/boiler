@@ -23,6 +23,12 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comments',
+      },
+    ],
     context: String,
     pics: {
       type: [String],

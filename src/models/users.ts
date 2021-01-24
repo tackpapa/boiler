@@ -20,6 +20,10 @@ const UserSchema: Schema = new mongoose.Schema(
     kakaoid: String,
     accessToken: String,
     profilepic: String,
+    level: {
+      type: Number,
+      default: 1,
+    },
   },
   {
     timestamps: true,

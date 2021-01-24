@@ -40,7 +40,7 @@ const create: Controller = async (ctx) => {
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags, isjob, location } = ctx.request.body;
+  const { context, title, tags, location } = ctx.request.body;
   const newtag = JSON.parse(tags);
   const author = ctx.state.user._id;
   const post = await db.posts.findOneAndUpdate(
@@ -58,14 +58,21 @@ const update: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.posts.findOne({ _id: id });
+  const post = await db.posts
+    .findOne({ _id: id })
+    .populate('author')
+    .populate('comments');
   post?.viewUp();
   ctx.status = 200;
   ctx.body = post;
 };
 
 const latest: Controller = async (ctx) => {
-  const posts = await db.posts.find().sort({ _id: -1 }).limit(20);
+  const posts = await db.posts
+    .find()
+    .populate('comments')
+    .sort({ _id: -1 })
+    .limit(20);
   ctx.status = 200;
   ctx.body = posts;
 };

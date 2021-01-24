@@ -12,6 +12,8 @@ export interface Post {
 export interface PostDocument extends Post, Document {
   //method를 넣는다
   viewUp: () => void;
+  comments: string;
+  push: () => void;
 }
 
 export interface PostModel extends Model<PostDocument> {}
@@ -24,6 +26,12 @@ const PostSchema: Schema<PostDocument> = new mongoose.Schema(
       ref: 'Users',
     },
     context: String,
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comments',
+      },
+    ],
     pics: {
       type: [String],
       default: [],

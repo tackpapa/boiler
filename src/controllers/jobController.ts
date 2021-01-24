@@ -19,22 +19,22 @@ const create: Controller = async (ctx) => {
     tags: newtag,
     location,
   });
-  var arr = [];
 
-  var arr = [ctx.request.files.pic.path, ctx.request.files.pic2.path];
-  for (var val of arr) {
-    var param = {
-      Bucket: 'ridasprod',
-      Key: `jobimage/${item._id + Math.random()}`,
-      ACL: 'public-read',
-      Body: await fs.createReadStream(val),
-      ContentType: 'image/png',
-    };
-    const lala = await upload(param);
-    await (item as any).pics.push(lala.Location);
-  }
+  ctx.request.files.pic.forEach(
+    async ({ path }: { path: string }, i: number) => {
+      var param = {
+        Bucket: 'ridasprod',
+        Key: `jobimage/${item._id + i}`,
+        ACL: 'public-read',
+        Body: await fs.createReadStream(path),
+        ContentType: 'image/png',
+      };
+      const lala = await upload(param);
+      await (item as any).pics.push(lala.Location);
+      item.save();
+    }
+  );
 
-  item.save();
   ctx.status = 200;
 };
 
@@ -58,14 +58,18 @@ const update: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.jobs.findOne({ _id: id });
+  const post = await db.jobs.findOne({ _id: id }).populate('comments');
   post?.viewUp();
   ctx.status = 200;
   ctx.body = post;
 };
 
 const latest: Controller = async (ctx) => {
-  const posts = await db.jobs.find().sort({ _id: -1 }).limit(20);
+  const posts = await db.jobs
+    .find()
+    .populate('comments')
+    .sort({ _id: -1 })
+    .limit(20);
   ctx.status = 200;
   ctx.body = posts;
 };

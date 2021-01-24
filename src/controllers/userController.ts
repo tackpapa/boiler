@@ -113,6 +113,18 @@ const uploadProfile: Controller = async (ctx) => {
   ctx.status = 200;
 };
 
+const userprofile: Controller = async (ctx) => {
+  const userid = ctx.state.user._id;
+  const posts = await db.posts.find({ author: userid }).populate('commnets');
+  const jobs = await db.jobs.find({ author: userid }).populate('comments');
+  const markets = await db.markets
+    .find({ author: userid })
+    .populate('comments');
+  console.log(posts, jobs, markets);
+  ctx.status = 200;
+  ctx.body = { posts, jobs, markets };
+};
+
 const logout: Controller = (ctx) => {
   ctx.status = 200;
 };
@@ -123,6 +135,7 @@ export default {
   update,
   deleteone,
   findone,
+  userprofile,
   logout,
   uploadProfile,
 };
