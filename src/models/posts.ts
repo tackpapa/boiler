@@ -20,7 +20,10 @@ export interface PostModel extends Model<PostDocument> {}
 
 const PostSchema: Schema<PostDocument> = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      index: true,
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
@@ -46,7 +49,12 @@ const PostSchema: Schema<PostDocument> = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+PostSchema.index({
+  title: 'text',
+  author: 'text',
+  tags: 'text',
+  context: 'text',
+});
 PostSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();

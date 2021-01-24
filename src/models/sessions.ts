@@ -1,6 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-const SessionSchema = new mongoose.Schema({
+export interface Session {
+  connectionId: string;
+  userId: string;
+}
+
+export interface SessionDocument extends Session, Document {
+  //method를 넣는다
+}
+export interface SessionModel extends Model<SessionDocument> {}
+
+const SessionSchema: Schema<SessionDocument> = new mongoose.Schema({
   connectionId: String,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -9,6 +19,7 @@ const SessionSchema = new mongoose.Schema({
 });
 
 const model =
-  mongoose.models.Sessions || mongoose.model('Sessions', SessionSchema);
+  mongoose.models.Sessions ||
+  mongoose.model<SessionDocument, SessionModel>('Sessions', SessionSchema);
 
 export default model;

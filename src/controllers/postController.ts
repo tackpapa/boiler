@@ -67,6 +67,14 @@ const findone: Controller = async (ctx) => {
   ctx.body = post;
 };
 
+const search: Controller = async (ctx) => {
+  const { query } = ctx.params;
+  const post = await db.posts.find({ $text: { $search: query } });
+  // const post2 = await db.posts.find({ title: { $in: query } });
+  ctx.status = 200;
+  ctx.body = post;
+};
+
 const latest: Controller = async (ctx) => {
   const posts = await db.posts
     .find()
@@ -83,4 +91,4 @@ const deleteone: Controller = async (ctx) => {
   ctx.status = 200;
 };
 
-export default { create, deleteone, update, findone, latest };
+export default { create, deleteone, update, findone, search, latest };

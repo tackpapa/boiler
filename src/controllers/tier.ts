@@ -1,6 +1,3 @@
-import db from 'db';
-import { Controller } from './types';
-
 const tier = (exp: number) => {
   if (exp === 0) {
     return {

@@ -18,7 +18,7 @@ const create: Controller = async (ctx) => {
   var pattern = /\S+@\S+\.\S+/;
   const emailVal = pattern.test(email);
   if (emailVal === false) {
-    ctx.status = 400;
+    ctx.status = 401;
     return;
   }
   const hashed = hash(password);

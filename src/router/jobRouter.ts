@@ -7,8 +7,9 @@ const router = new Router({
 });
 
 router.post('/create', requireAuth, JobController.create);
-router.get('/deleteone:id', requireAuth, JobController.deleteone);
+router.get('/deleteone/:id', requireAuth, JobController.deleteone);
 router.get('/findone/:id', JobController.findone);
+router.get('/search/:query', JobController.search);
 router.get('/latest', JobController.latest);
 router.post('/update:id', requireAuth, JobController.update);
 

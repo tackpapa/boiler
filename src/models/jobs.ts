@@ -18,7 +18,10 @@ export interface JobModel extends Model<JobDocument> {}
 
 const JobSchema: Schema<JobDocument> = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      index: true,
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
@@ -45,6 +48,13 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
     timestamps: true,
   }
 );
+JobSchema.index({
+  title: 'text',
+  author: 'text',
+  tags: 'text',
+  context: 'text',
+  location: 'text',
+});
 JobSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();

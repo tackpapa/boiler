@@ -1,3 +1,4 @@
+import db from 'db';
 import { Context } from 'koa';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
@@ -27,7 +28,7 @@ export const decodeJWT = (token: string) =>
 
 export const requireAuth = (ctx: Context, next: () => void) => {
   if (!ctx.state.user) {
-    ctx.body = 'Unauthorized go login';
+    ctx.body = '로그인이 필요합니다';
     ctx.status = 401;
     return null;
   }
@@ -38,12 +39,12 @@ export const jwtParser = async (ctx: Context, next: () => Promise<any>) => {
   if (token) {
     const user = decodeJWT(token.replace(/^Bearer /, ''));
     ctx.state.user = user;
-    // const session = await db.Session.findOne({
-    //   userId: user._id,
-    // });
-    // if (session) {
-    //   ctx.state.socketId = session.connectionId;
-    // }
+    const session = await db.sessions.findOne({
+      userId: user._id,
+    });
+    if (session) {
+      ctx.state.socketId = session.connectionId;
+    }
   }
   await next();
 };

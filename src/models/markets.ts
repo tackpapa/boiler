@@ -18,7 +18,10 @@ export interface MarketModel extends Model<MarketDocument> {}
 
 const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      index: true,
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
@@ -45,7 +48,13 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+MarketSchema.index({
+  title: 'text',
+  author: 'text',
+  tags: 'text',
+  context: 'text',
+  price: 'text',
+});
 MarketSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();

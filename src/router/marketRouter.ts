@@ -7,8 +7,9 @@ const router = new Router({
 });
 
 router.post('/create', requireAuth, MarketController.create);
-router.get('/deleteone:id', requireAuth, MarketController.deleteone);
+router.get('/deleteone/:id', requireAuth, MarketController.deleteone);
 router.get('/findone/:id', MarketController.findone);
+router.get('/search/:query', MarketController.search);
 router.get('/latest', MarketController.latest);
 router.post('/update:id', requireAuth, MarketController.update);
 

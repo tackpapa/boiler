@@ -12,6 +12,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.connect(process.env.MONGO_URL!, {
   useNewUrlParser: true,
   useFindAndModify: false,
+  useCreateIndex: true,
 });
 
 const db = mongoose.connection;
