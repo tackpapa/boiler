@@ -20,8 +20,9 @@ const create: Controller = async (ctx) => {
     price,
   });
 
-  ctx.request.files.pic.forEach(
-    async ({ path }: { path: string }, i: number) => {
+  []
+    .concat(ctx.request.files.pic)
+    .forEach(async ({ path }: { path: string }, i: number) => {
       var param = {
         Bucket: 'ridasprod',
         Key: `marketimage/${item._id + i}`,
@@ -32,8 +33,7 @@ const create: Controller = async (ctx) => {
       const lala = await upload(param);
       await (item as any).pics.push(lala.Location);
       item.save();
-    }
-  );
+    });
 
   ctx.status = 200;
 };

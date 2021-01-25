@@ -1,9 +1,14 @@
-const Koa = require('Koa');
-const bodyParser = require('koa-body');
-const koaCors = require('koa-cors');
-const koaHelmet = require('koa-helmet');
+// const Koa = require('Koa');
+import Koa from 'Koa';
+// const bodyParser = require('koa-body');
+import bodyParser from 'koa-body';
+// const koaCors = require('koa-cors');
+import koaCors from 'koa-cors';
+// const koaHelmet = require('koa-helmet');
+import koaHelmet from 'koa-helmet';
 import router from './router/route';
-const dotenv = require('dotenv');
+// const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 import path from 'path';
 import { jwtParser } from 'utils/jwt';
 import socket from './socket';
@@ -17,7 +22,7 @@ const app = new Koa();
 
 app
   .use(jwtParser)
-  .use(bodyParser({ multipart: true, formidable: true }))
+  .use(bodyParser({ multipart: true, formidable: {} }))
   .use(router.allowedMethods())
   .use(koaHelmet())
   .use(koaCors())

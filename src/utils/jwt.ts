@@ -9,7 +9,7 @@ export interface JWT {
 }
 
 const option = {
-  expiresIn: '7d',
+  expiresIn: '30d',
 };
 
 const generateToken = (payload: JWT) =>

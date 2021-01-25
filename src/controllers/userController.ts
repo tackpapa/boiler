@@ -6,7 +6,7 @@ import generateToken from 'utils/jwt';
 import upload from '../utils/s3';
 import fs from 'fs';
 
-const hash: Controller = (_password: any) => {
+const hash = (_password: any) => {
   return crypto
     .createHash('sha256', process.env.SECRET_KEY)
     .update(_password)

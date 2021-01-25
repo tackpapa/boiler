@@ -37,6 +37,8 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/koa": "^2.11.6",
     "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-cors": "0.0.0",
+    "@types/koa-helmet": "^6.0.1",
     "@types/koa-joi-router": "^5.2.5",
     "@types/object-path": "^0.11.0",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
