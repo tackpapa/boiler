@@ -70,7 +70,6 @@ const findone: Controller = async (ctx) => {
 const search: Controller = async (ctx) => {
   const { query } = ctx.params;
   const post = await db.posts.find({ $text: { $search: query } });
-  // const post2 = await db.posts.find({ title: { $in: query } });
   ctx.status = 200;
   ctx.body = post;
 };

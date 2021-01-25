@@ -1,13 +1,9 @@
-// const Koa = require('Koa');
 import Koa from 'Koa';
-// const bodyParser = require('koa-body');
 import bodyParser from 'koa-body';
-// const koaCors = require('koa-cors');
 import koaCors from 'koa-cors';
-// const koaHelmet = require('koa-helmet');
 import koaHelmet from 'koa-helmet';
 import router from './router/route';
-// const dotenv = require('dotenv');
+
 import dotenv from 'dotenv';
 import path from 'path';
 import { jwtParser } from 'utils/jwt';

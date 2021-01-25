@@ -72,9 +72,17 @@ const login: Controller = async (ctx) => {
 };
 
 const update: Controller = async (ctx) => {
-  const { email, password, name, cell } = ctx.request.body;
-  const hashed = hash(password);
-  await db.users.findOneAndUpdate({ email }, { password: hashed, name, cell });
+  const { email, password, name, cell, memo } = ctx.request.body;
+  if (password) {
+    var hashed = hash(password);
+    await db.users.findOneAndUpdate(
+      { email },
+      { password: hashed, name, cell, memo }
+    );
+  } else {
+    await db.users.findOneAndUpdate({ email }, { name, cell, memo });
+  }
+
   ctx.status = 200;
 };
 
