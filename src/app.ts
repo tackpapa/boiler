@@ -3,7 +3,6 @@ import bodyParser from 'koa-body';
 import koaCors from 'koa-cors';
 import koaHelmet from 'koa-helmet';
 import router from './router/route';
-
 import dotenv from 'dotenv';
 import path from 'path';
 import { jwtParser } from 'utils/jwt';

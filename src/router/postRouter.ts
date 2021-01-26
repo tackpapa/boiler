@@ -6,7 +6,7 @@ const router = new Router({
   prefix: '/post',
 });
 
-router.post('/create', requireAuth, PostController.create);
+router.post('/create', PostController.create);
 router.get('/deleteone/:id', PostController.deleteone);
 router.get('/findone/:id', PostController.findone);
 router.get('/search/:query', PostController.search);

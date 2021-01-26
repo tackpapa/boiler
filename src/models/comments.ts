@@ -4,8 +4,27 @@ const CommentSchema: Schema = new mongoose.Schema(
   {
     author: String,
     authorexp: Number,
-    posting: mongoose.Schema.Types.ObjectId,
+    authorid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
+    },
+    recomments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comments',
+      },
+    ],
     text: String,
+    post: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      refPath: 'PostModel',
+    },
+    postmodel: {
+      type: String,
+      required: true,
+      enum: ['Market', 'Job', 'Post', 'Comment'],
+    },
   },
   {
     timestamps: true,

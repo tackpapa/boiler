@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { createTextChangeRange } from 'typescript';
 
 const UserSchema: Schema = new mongoose.Schema(
   {
@@ -14,7 +13,10 @@ const UserSchema: Schema = new mongoose.Schema(
       type: String,
       required: [true, "can't be blank"],
     },
-    memo: String,
+    memo: {
+      type: String,
+      default: '유저특이사항',
+    },
     exp: Number,
     password: String,
     cell: Number,

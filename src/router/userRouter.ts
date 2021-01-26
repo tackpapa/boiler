@@ -7,7 +7,7 @@ const router = new Router({
 });
 
 router.get('/:id', UserController.findone);
-router.get('/profile/:id', requireAuth, UserController.userprofile);
+router.get('/profile/:id', UserController.userprofile);
 router.post('/create', UserController.create);
 router.post('/login', UserController.login);
 router.post('/update', UserController.update);

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { isConstructSignatureDeclaration } from 'typescript';
 
 const BannerSchema: Schema = new mongoose.Schema(
   {

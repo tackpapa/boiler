@@ -128,9 +128,11 @@ const userprofile: Controller = async (ctx) => {
   const markets = await db.markets
     .find({ author: userid })
     .populate('comments');
-  console.log(posts, jobs, markets);
+  const comments = await db.comments
+    .find({ author: userid })
+    .populate('comments');
   ctx.status = 200;
-  ctx.body = { posts, jobs, markets };
+  ctx.body = { posts, jobs, markets, comments };
 };
 
 const logout: Controller = (ctx) => {

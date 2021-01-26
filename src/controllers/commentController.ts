@@ -1,12 +1,8 @@
 import db from 'db';
-import {
-  createNoSubstitutionTemplateLiteral,
-  isNamedExportBindings,
-} from 'typescript';
 import { Controller } from './types';
 
 const create: Controller = async (ctx) => {
-  const { text, post } = ctx.request.body;
+  const { text, post, postmodel } = ctx.request.body;
   const author: any = await db.users.findOne({ _id: ctx.state.user._id });
   const expup = await db.users.findOneAndUpdate(
     { _id: author._id },
@@ -18,6 +14,7 @@ const create: Controller = async (ctx) => {
     author: author.name,
     authorexp: author.exp,
     post,
+    postmodel,
   });
   try {
     const cmtpush = await db.posts.findOne({ _id: post });
@@ -34,6 +31,12 @@ const create: Controller = async (ctx) => {
     await (cmtpush as any).comments.push(comment._id);
     cmtpush?.save();
   } catch (err) {}
+  try {
+    const cmtpush = await db.comments.findOne({ _id: post });
+    await (cmtpush as any).recomments.push(comment._id);
+    cmtpush?.save();
+  } catch (err) {}
+
   ctx.status = 200;
 };
 
