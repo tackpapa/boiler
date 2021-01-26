@@ -52,6 +52,14 @@ const hotProducts: Controller = async (ctx) => {
   ctx.body = products;
 };
 
+const createcate: Controller = async (ctx) => {
+  const { name } = ctx.request.body;
+  const item = await db.categorys.create({
+    name: name,
+  });
+  ctx.status = 200;
+};
+
 const stats: Controller = async (ctx) => {
   const products = await db.markets.find().countDocuments();
   const users = await db.users.find().countDocuments();
@@ -94,4 +102,5 @@ export default {
   hotJobs,
   products,
   hotProducts,
+  createcate,
 };

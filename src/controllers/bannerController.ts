@@ -8,6 +8,15 @@ const home: Controller = async (ctx) => {
   ctx.body = allbanner;
 };
 
+const getbanner: Controller = async (ctx) => {
+  const { category } = ctx.params;
+  const banners = await db.banners
+    .find({ category: category })
+    .sort({ _id: -1 })
+    .limit(20);
+  ctx.body = banners;
+};
+
 const create: Controller = async (ctx) => {
   const { title, category, link } = ctx.request.body;
   const item = await db.banners.create({
@@ -36,4 +45,4 @@ const deleteone: Controller = async (ctx) => {
   ctx.status = 200;
 };
 
-export default { home, create, deleteone };
+export default { home, create, deleteone, getbanner };

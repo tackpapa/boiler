@@ -6,6 +6,7 @@ import markets from './models/markets';
 import banners from './models/banners';
 import sessions from './models/sessions';
 import jobs from './models/jobs';
+import categorys from './models/categorys';
 
 mongoose.set('useCreateIndex', true);
 
@@ -32,4 +33,5 @@ export default {
   sessions,
   banners,
   jobs,
+  categorys,
 };

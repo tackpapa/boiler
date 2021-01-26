@@ -6,6 +6,7 @@ const BannerSchema: Schema = new mongoose.Schema(
     pic: String,
     category: String,
     link: String,
+    activated: Boolean,
   },
   {
     timestamps: true,

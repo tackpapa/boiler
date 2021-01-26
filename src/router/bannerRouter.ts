@@ -8,6 +8,7 @@ const router = new Router({
 
 router.get('/home', BannerController.home);
 router.post('/create', BannerController.create);
+router.get('/banner/:category', BannerController.getbanner);
 router.del('/delete/:id', BannerController.deleteone);
 
 export default router;
