@@ -2,11 +2,13 @@ import mongoose, { Schema } from 'mongoose';
 
 const CommentSchema: Schema = new mongoose.Schema(
   {
-    author: String,
-    authorexp: Number,
-    authorid: {
+    author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'Users',
+    },
+    target: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comments',
     },
     recomments: [
       {

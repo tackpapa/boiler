@@ -2,7 +2,7 @@ import db from 'db';
 import { Controller } from './types';
 
 const create: Controller = async (ctx) => {
-  const { text, post, postmodel } = ctx.request.body;
+  const { text, post, postmodel, target } = ctx.request.body;
   const author: any = await db.users.findOne({ _id: ctx.state.user._id });
   const expup = await db.users.findOneAndUpdate(
     { _id: author._id },
@@ -11,10 +11,10 @@ const create: Controller = async (ctx) => {
   expup?.save();
   const comment = await db.comments.create({
     text,
-    author: author.name,
-    authorexp: author.exp,
+    author: author,
     post,
     postmodel,
+    target,
   });
   try {
     const cmtpush = await db.posts.findOne({ _id: post });

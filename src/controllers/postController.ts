@@ -58,10 +58,11 @@ const update: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.posts
+  const post: any = await db.posts
     .findOne({ _id: id })
     .populate('author')
     .populate('comments');
+
   post?.viewUp();
   ctx.status = 200;
   ctx.body = post;

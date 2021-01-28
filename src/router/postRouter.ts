@@ -11,6 +11,6 @@ router.get('/deleteone/:id', PostController.deleteone);
 router.get('/findone/:id', PostController.findone);
 router.get('/search/:query', PostController.search);
 router.get('/latest', PostController.latest);
-router.post('/update:id', requireAuth, PostController.update);
+router.post('/update/:id', requireAuth, PostController.update);
 
 export default router;

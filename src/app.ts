@@ -23,12 +23,11 @@ app
   .use(koaCors())
   .use(router.routes());
 
-app.listen(process.env.PORT, Listening);
 function Listening() {
   console.log(`♥️♥️♥️♥️♥️  listening now at port`, process.env.PORT);
 }
-// const server = http.createServer(app.callback());
-// socket(server);
-// server.listen(process.env.PORT);
+const server = http.createServer(app.callback());
+socket(server);
+server.listen(process.env.PORT, Listening);
 
-// 채팅세션, 노티피케이션클라, 어드민 로그인, 몽고레플리카설정 마스터 슬레이브, 로그아웃로직, 세션 로그아웃 등등
+// 채팅세션, 노티피케이션클라, , 몽고레플리카설정 마스터 슬레이브,

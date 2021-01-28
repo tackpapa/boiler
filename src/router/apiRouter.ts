@@ -15,5 +15,6 @@ router.get('/hotjobs', apiController.hotJobs);
 router.get('/product', apiController.products);
 router.get('/hotproduct', apiController.hotProducts);
 router.post('/createcate', apiController.createcate);
+router.get('/chatlist', apiController.chatlist);
 
 export default router;

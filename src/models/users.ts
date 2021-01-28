@@ -17,7 +17,10 @@ const UserSchema: Schema = new mongoose.Schema(
       type: String,
       default: '유저특이사항',
     },
-    exp: Number,
+    exp: {
+      type: Number,
+      default: 0,
+    },
     password: String,
     cell: Number,
     kakaoid: String,

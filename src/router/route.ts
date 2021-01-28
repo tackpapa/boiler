@@ -7,6 +7,7 @@ import apiRouter from './apiRouter';
 import bannerRouter from './bannerRouter';
 import jobRouter from './jobRouter';
 import tier from './../controllers/tier';
+import chatRouter from './chatRouter';
 
 const router = new Router();
 router.use(userRouter.routes());
@@ -16,6 +17,7 @@ router.use(marketRouter.routes());
 router.use(apiRouter.routes());
 router.use(bannerRouter.routes());
 router.use(jobRouter.routes());
+router.use(chatRouter.routes());
 
 router.get('/', (ctx) => {
   const _tier = tier(18992);

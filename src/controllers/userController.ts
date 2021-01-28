@@ -123,16 +123,14 @@ const uploadProfile: Controller = async (ctx) => {
 
 const userprofile: Controller = async (ctx) => {
   const userid = ctx.state.user._id;
-  const posts = await db.posts.find({ author: userid }).populate('commnets');
-  const jobs = await db.jobs.find({ author: userid }).populate('comments');
-  const markets = await db.markets
-    .find({ author: userid })
-    .populate('comments');
-  const comments = await db.comments
-    .find({ author: userid })
-    .populate('comments');
+  const user = await db.users.find({ _id: userid });
+  const posts = await db.posts.find({ author: userid });
+  const jobs = await db.jobs.find({ author: userid });
+  const markets = await db.markets.find({ author: userid });
+  const comments = await db.comments.find({ author: userid });
+
   ctx.status = 200;
-  ctx.body = { posts, jobs, markets, comments };
+  ctx.body = { user, posts, jobs, markets, comments };
 };
 
 const logout: Controller = (ctx) => {

@@ -1,4 +1,5 @@
 import db from 'db';
+import { Document } from 'mongoose';
 import { Controller } from './types';
 
 const home: Controller = async (ctx) => {
@@ -57,7 +58,19 @@ const createcate: Controller = async (ctx) => {
   const item = await db.categorys.create({
     name: name,
   });
+
   ctx.status = 200;
+};
+
+const chatlist: Controller = async (ctx) => {
+  var item: any = [];
+  const list = await db.chats.find({ to: ctx.state.user._id }).distinct('from');
+  list.forEach(async (i) => {
+    const person = await db.users.findOne({ _id: i });
+    await item.push(person);
+  });
+  ctx.body = item;
+  ctx.status = 202;
 };
 
 const stats: Controller = async (ctx) => {
@@ -103,4 +116,5 @@ export default {
   products,
   hotProducts,
   createcate,
+  chatlist,
 };

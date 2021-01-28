@@ -37,13 +37,20 @@ export const requireAuth = (ctx: Context, next: () => void) => {
 export const jwtParser = async (ctx: Context, next: () => Promise<any>) => {
   const token = ctx.header.authorization;
   if (token) {
-    const user = decodeJWT(token.replace(/^Bearer /, ''));
+    let user = undefined;
+    try {
+      user = decodeJWT(token.replace(/^Bearer /, ''));
+    } catch (error) {
+      console.log('jwt decode error');
+    }
     ctx.state.user = user;
-    const session = await db.sessions.findOne({
-      userId: user._id,
-    });
-    if (session) {
-      ctx.state.socketId = session.connectionId;
+    if (user) {
+      const session = await db.sessions.findOne({
+        userId: `${user._id}`,
+      });
+      if (session) {
+        ctx.state.socketId = session.connectionId;
+      }
     }
   }
   await next();
