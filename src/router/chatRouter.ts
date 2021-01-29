@@ -7,5 +7,6 @@ const router = new Router({
 });
 
 router.post('/send', ChatController.send);
+router.get('/bringchats/:date', ChatController.bringchats);
 
 export default router;

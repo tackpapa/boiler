@@ -14,6 +14,15 @@ const send: Controller = async (ctx) => {
   ctx.status = 200;
 };
 
+const bringchats: Controller = async (ctx) => {
+  const chats = await db.chats.find({
+    $or: [{ to: ctx.state.user._id }, { from: ctx.state.user._id }],
+    createdAt: { $gt: ctx.params.date },
+  });
+  ctx.body = chats;
+};
+
 export default {
   send,
+  bringchats,
 };

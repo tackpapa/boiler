@@ -58,7 +58,10 @@ const update: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.jobs.findOne({ _id: id }).populate('comments');
+  const post = await db.jobs
+    .findOne({ _id: id })
+    .populate('author')
+    .populate('comments');
   post?.viewUp();
   ctx.status = 200;
   ctx.body = post;

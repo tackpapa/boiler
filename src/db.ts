@@ -26,7 +26,6 @@ db.once('open', handleOpen);
 db.on('error', (error) => console.log(`error on db connection${error}`));
 
 export default {
-  db,
   users,
   comments,
   posts,

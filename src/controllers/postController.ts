@@ -62,7 +62,6 @@ const findone: Controller = async (ctx) => {
     .findOne({ _id: id })
     .populate('author')
     .populate('comments');
-
   post?.viewUp();
   ctx.status = 200;
   ctx.body = post;

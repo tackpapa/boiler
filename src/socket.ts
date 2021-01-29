@@ -11,12 +11,7 @@ const init = (server: Server) => {
       await db.sessions.deleteMany({ userId });
       await db.sessions.create({ userId, connectionId: socket.id });
     });
-    socket.on('bringchats', async (userId) => {
-      const savedchats = await db.chats.find({ to: userId }).sort({ _id: 1 });
-      savedchats.forEach((i) => {
-        io.emit(userId.connectionId).emit('chat', i.msg);
-      });
-    });
+
     socket.on('disconnect', async () => {
       await db.sessions.deleteMany({ connectionId: socket.id });
     });

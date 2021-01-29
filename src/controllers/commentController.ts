@@ -16,24 +16,16 @@ const create: Controller = async (ctx) => {
     postmodel,
     target,
   });
+  const map: {
+    [key: string]: keyof typeof db;
+  } = {
+    Post: 'posts',
+    Job: 'jobs',
+    Market: 'markets',
+  };
   try {
-    const cmtpush = await db.posts.findOne({ _id: post });
+    const cmtpush = await db[map[postmodel]].findOne({ _id: post });
     await (cmtpush as any).comments.push(comment._id);
-    cmtpush?.save();
-  } catch (err) {}
-  try {
-    const cmtpush = await db.jobs.findOne({ _id: post });
-    await (cmtpush as any).comments.push(comment._id);
-    cmtpush?.save();
-  } catch (err) {}
-  try {
-    const cmtpush = await db.markets.findOne({ _id: post });
-    await (cmtpush as any).comments.push(comment._id);
-    cmtpush?.save();
-  } catch (err) {}
-  try {
-    const cmtpush = await db.comments.findOne({ _id: post });
-    await (cmtpush as any).recomments.push(comment._id);
     cmtpush?.save();
   } catch (err) {}
 

@@ -20,7 +20,7 @@ router.use(jobRouter.routes());
 router.use(chatRouter.routes());
 
 router.get('/', (ctx) => {
-  const _tier = tier(18992);
+  const _tier = tier(322);
   console.log(_tier);
   ctx.body = _tier;
 });

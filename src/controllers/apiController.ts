@@ -3,8 +3,10 @@ import { Document } from 'mongoose';
 import { Controller } from './types';
 
 const home: Controller = async (ctx) => {
-  const posts = await db.posts.find().sort({ _id: -1 }).limit(20);
-  ctx.body = posts;
+  const posts = await db.posts.find().sort({ _id: -1 }).limit(5);
+  const jobs = await db.jobs.find().sort({ _id: -1 }).limit(5);
+  const markets = await db.markets.find().sort({ _id: -1 }).limit(5);
+  ctx.body = { posts, jobs, markets };
 };
 
 const tag: Controller = async (ctx) => {
@@ -63,12 +65,15 @@ const createcate: Controller = async (ctx) => {
 };
 
 const chatlist: Controller = async (ctx) => {
-  var item: any = [];
-  const list = await db.chats.find({ to: ctx.state.user._id }).distinct('from');
-  list.forEach(async (i) => {
-    const person = await db.users.findOne({ _id: i });
-    await item.push(person);
-  });
+  const list = await Promise.all([
+    db.chats.find({ to: ctx.state.user._id }).distinct('from'),
+    db.chats.find({ from: ctx.state.user._id }).distinct('to'),
+  ]).then((result: any) => [
+    ...new Set(result.flat().map((id: any) => id.toString())),
+  ]);
+  const t = list.map((i) => db.users.findOne({ _id: i }));
+  const item = await Promise.all(t);
+  console.log(item);
   ctx.body = item;
   ctx.status = 202;
 };
