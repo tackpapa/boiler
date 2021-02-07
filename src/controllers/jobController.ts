@@ -90,6 +90,7 @@ const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post = await db.jobs.findOneAndRemove({ _id: id });
   ctx.status = 200;
+  ctx.body = 'deleted;';
 };
 
 export default { create, deleteone, update, findone, search, latest };

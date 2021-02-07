@@ -52,4 +52,11 @@ const deleteone: Controller = async (ctx) => {
   ctx.status = 200;
 };
 
-export default { create, deleteone, update };
+const getcomments: Controller = async (ctx) => {
+  const { id } = ctx.params;
+  const comments: any = await db.comments.find({ target: id });
+  ctx.status = 200;
+  ctx.body = comments;
+};
+
+export default { create, deleteone, update, getcomments };

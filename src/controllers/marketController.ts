@@ -81,6 +81,7 @@ const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post = await db.markets.findOneAndRemove({ _id: id });
   ctx.status = 200;
+  ctx.body = 'deleted;';
 };
 
 export default { create, deleteone, update, search, findone, latest };

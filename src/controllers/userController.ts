@@ -89,14 +89,16 @@ const update: Controller = async (ctx) => {
 };
 
 const deleteone: Controller = async (ctx) => {
-  const { email } = ctx.request.body;
+  const { _id } = ctx.request.body;
   await login(ctx);
   if (ctx.status === 200) {
-    db.users.deleteOne({ email });
-    console.log(email, ' user deleted');
+    db.users.deleteOne({ _id });
+    console.log(' user deleted');
   } else {
     console.log('user already gone');
   }
+  ctx.body = 'deleted;';
+  ctx.status = 200;
 };
 
 const findone: Controller = async (ctx) => {

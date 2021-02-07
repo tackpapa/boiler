@@ -49,6 +49,7 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    location: String,
   },
   {
     timestamps: true,

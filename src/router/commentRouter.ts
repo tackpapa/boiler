@@ -8,6 +8,7 @@ const router = new Router({
 
 router.post('/create', commentController.create);
 router.post('/update/:id', commentController.update);
-router.get('/delete/:id', commentController.deleteone);
+router.get('/deleteone/:id', commentController.deleteone);
+router.get('/get/:id', commentController.getcomments);
 
 export default router;

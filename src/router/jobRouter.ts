@@ -11,6 +11,6 @@ router.get('/deleteone/:id', JobController.deleteone);
 router.get('/findone/:id', JobController.findone);
 router.get('/search/:query', JobController.search);
 router.get('/latest', JobController.latest);
-router.post('/update:id', JobController.update);
+router.post('/update/:id', JobController.update);
 
 export default router;
