@@ -41,8 +41,14 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    views: Number,
-    price: Number,
+    views: {
+      type: Number,
+      default: 0,
+    },
+    price: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

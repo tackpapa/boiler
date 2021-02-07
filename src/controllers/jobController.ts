@@ -36,6 +36,7 @@ const create: Controller = async (ctx) => {
     });
 
   ctx.status = 200;
+  ctx.body = item;
 };
 
 const update: Controller = async (ctx) => {
@@ -54,6 +55,7 @@ const update: Controller = async (ctx) => {
   );
   (post as any).save();
   ctx.status = 200;
+  ctx.body = post;
 };
 
 const findone: Controller = async (ctx) => {
@@ -79,9 +81,9 @@ const latest: Controller = async (ctx) => {
 
 const search: Controller = async (ctx) => {
   const { query } = ctx.params;
-  const post = await db.jobs.find({ $text: { $search: query } });
+  const posts = await db.jobs.find({ $text: { $search: query } });
   ctx.status = 200;
-  ctx.body = post;
+  ctx.body = posts;
 };
 
 const deleteone: Controller = async (ctx) => {

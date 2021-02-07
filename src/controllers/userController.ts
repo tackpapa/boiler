@@ -67,23 +67,25 @@ const login: Controller = async (ctx) => {
   }
   ctx.status = 200;
   const token = await generateToken({ _id: user.id, email: user.email });
-  ctx.body = token;
+  ctx.body = { token, email, name: user.name };
   return;
 };
 
 const update: Controller = async (ctx) => {
   const { email, password, name, cell, memo } = ctx.request.body;
+  let user;
   if (password) {
     var hashed = hash(password);
-    await db.users.findOneAndUpdate(
+    user = await db.users.findOneAndUpdate(
       { email },
       { password: hashed, name, cell, memo }
     );
   } else {
-    await db.users.findOneAndUpdate({ email }, { name, cell, memo });
+    user = await db.users.findOneAndUpdate({ email }, { name, cell, memo });
   }
 
   ctx.status = 200;
+  ctx.body = user;
 };
 
 const deleteone: Controller = async (ctx) => {

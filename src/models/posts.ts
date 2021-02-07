@@ -10,7 +10,6 @@ export interface Post {
 }
 
 export interface PostDocument extends Post, Document {
-  //method를 넣는다
   viewUp: () => void;
   comments: string;
   push: () => void;
@@ -43,7 +42,10 @@ const PostSchema: Schema<PostDocument> = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    views: Number,
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

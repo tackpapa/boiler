@@ -39,9 +39,9 @@ export const jwtParser = async (ctx: Context, next: () => Promise<any>) => {
   if (token) {
     let user = undefined;
     try {
-      user = decodeJWT(token.replace(/^Bearer /, ''));
+      user = decodeJWT(token.split(' ')[1]);
     } catch (error) {
-      console.log('jwt decode error');
+      console.log(error, 'jwt decode error');
     }
     ctx.state.user = user;
     if (user) {

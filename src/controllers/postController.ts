@@ -36,13 +36,13 @@ const create: Controller = async (ctx) => {
     });
 
   ctx.status = 200;
+  ctx.body = item;
 };
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
   const { context, title, tags, location } = ctx.request.body;
   const newtag = JSON.parse(tags);
-  const author = ctx.state.user._id;
   const post = await db.posts.findOneAndUpdate(
     { _id: id },
     {
@@ -54,6 +54,7 @@ const update: Controller = async (ctx) => {
   );
   (post as any).save();
   ctx.status = 200;
+  ctx.body = post;
 };
 
 const findone: Controller = async (ctx) => {
@@ -79,7 +80,7 @@ const latest: Controller = async (ctx) => {
     .find()
     .populate('comments')
     .sort({ _id: -1 })
-    .limit(20);
+    .limit(3);
   ctx.status = 200;
   ctx.body = posts;
 };

@@ -36,6 +36,7 @@ const create: Controller = async (ctx) => {
     });
 
   ctx.status = 200;
+  ctx.body = item;
 };
 
 const update: Controller = async (ctx) => {
@@ -48,6 +49,7 @@ const update: Controller = async (ctx) => {
     { context: context, tags: newtag, title: title, price: price }
   );
   ctx.status = 200;
+  ctx.body = post;
 };
 
 const findone: Controller = async (ctx) => {

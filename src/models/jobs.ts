@@ -42,7 +42,10 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
       default: [],
     },
     location: String,
-    views: Number,
+    views: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
