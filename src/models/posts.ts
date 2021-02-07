@@ -28,6 +28,11 @@ const PostSchema: Schema<PostDocument> = new mongoose.Schema(
       ref: 'Users',
     },
     context: String,
+    category: {
+      type: String,
+      default: 'free',
+    },
+
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

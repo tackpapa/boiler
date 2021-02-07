@@ -4,7 +4,7 @@ import upload from '../utils/s3';
 import fs from 'fs';
 
 const create: Controller = async (ctx) => {
-  const { title, context, tags, location } = ctx.request.body;
+  const { title, context, tags, category } = ctx.request.body;
   const author = ctx.state.user._id;
   const user = await db.users.findOneAndUpdate(
     { _id: author },
@@ -17,7 +17,7 @@ const create: Controller = async (ctx) => {
     context,
     author,
     tags: newtag,
-    location,
+    category,
   });
 
   []
@@ -41,7 +41,7 @@ const create: Controller = async (ctx) => {
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags, location } = ctx.request.body;
+  const { context, title, tags, category } = ctx.request.body;
   const newtag = JSON.parse(tags);
   const post = await db.posts.findOneAndUpdate(
     { _id: id },
@@ -49,7 +49,7 @@ const update: Controller = async (ctx) => {
       context: context,
       tags: newtag,
       title: title,
-      location: location,
+      category: category,
     }
   );
   (post as any).save();
