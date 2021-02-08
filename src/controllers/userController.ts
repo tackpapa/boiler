@@ -5,6 +5,9 @@ import { Joi } from 'koa-joi-router';
 import generateToken from 'utils/jwt';
 import upload from '../utils/s3';
 import fs from 'fs';
+import sharp from 'sharp';
+
+const { PassThrough } = require('stream');
 
 const hash = (_password: any) => {
   return crypto
@@ -67,7 +70,7 @@ const login: Controller = async (ctx) => {
   }
   ctx.status = 200;
   const token = await generateToken({ _id: user.id, email: user.email });
-  ctx.body = { token, email, name: user.name };
+  ctx.body = { _id: user.id, token, email, name: user.name };
   return;
 };
 
@@ -83,7 +86,6 @@ const update: Controller = async (ctx) => {
   } else {
     user = await db.users.findOneAndUpdate({ email }, { name, cell, memo });
   }
-
   ctx.status = 200;
   ctx.body = user;
 };
@@ -93,9 +95,8 @@ const deleteone: Controller = async (ctx) => {
   await login(ctx);
   if (ctx.status === 200) {
     db.users.deleteOne({ _id });
-    console.log(' user deleted');
   } else {
-    console.log('user already gone');
+    console.error;
   }
   ctx.body = 'deleted;';
   ctx.status = 200;
@@ -110,13 +111,13 @@ const findone: Controller = async (ctx) => {
 
 const uploadProfile: Controller = async (ctx) => {
   const user: any = await db.users.findOne({ _id: ctx.state.user._id });
-  const { path } = ctx.request.files.profilepic;
-  const body = fs.createReadStream(path);
+  const { path } = ctx.request.files.pic;
+  const body = sharp(path).resize(60, 60).png();
   const param = {
-    Bucket: process.env.pjt_name,
+    Bucket: 'ridasprod',
     Key: `profileimage/${user._id}`,
     ACL: 'public-read',
-    Body: body,
+    Body: body.pipe(PassThrough()),
     ContentType: 'image/png',
   };
   const up = await upload(param);

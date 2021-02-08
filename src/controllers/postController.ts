@@ -75,12 +75,23 @@ const search: Controller = async (ctx) => {
   ctx.body = post;
 };
 
+const byCategory: Controller = async (ctx) => {
+  const { query } = ctx.params;
+  const post = await db.posts
+    .find({ category: query })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(5);
+  ctx.status = 200;
+  ctx.body = { data: post, type: query };
+};
+
 const latest: Controller = async (ctx) => {
   const posts = await db.posts
     .find()
-    .populate('comments')
+    .populate('author')
     .sort({ _id: -1 })
-    .limit(3);
+    .limit(10);
   ctx.status = 200;
   ctx.body = posts;
 };
@@ -92,4 +103,12 @@ const deleteone: Controller = async (ctx) => {
   ctx.body = 'deleted;';
 };
 
-export default { create, deleteone, update, findone, search, latest };
+export default {
+  create,
+  deleteone,
+  update,
+  findone,
+  search,
+  byCategory,
+  latest,
+};

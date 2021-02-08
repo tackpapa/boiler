@@ -9,17 +9,34 @@ const send: Controller = async (ctx) => {
   if (target) {
     io.to(target.connectionId).emit('chat', msg);
   } else {
-    console.log('상대가 로그오프상태라서 디비에 저장해뜸');
+    console.error;
   }
   ctx.status = 200;
 };
 
 const bringchats: Controller = async (ctx) => {
-  const chats = await db.chats.find({
-    $or: [{ to: ctx.state.user._id }, { from: ctx.state.user._id }],
-    createdAt: { $gt: ctx.params.date },
-  });
-  ctx.body = chats;
+  if (ctx.params.date) {
+    const chats = await db.chats
+      .find({
+        $or: [{ to: ctx.state.user._id }, { from: ctx.state.user._id }],
+        createdAt: { $gt: ctx.params.date },
+      })
+      .populate('to', 'name')
+      .populate('from', 'name');
+
+    ctx.body = chats;
+    ctx.status = 200;
+  } else {
+    const chats = await db.chats
+      .find({
+        $or: [{ to: ctx.state.user._id }, { from: ctx.state.user._id }],
+      })
+      .populate('to', 'name')
+      .populate('from', 'name');
+
+    ctx.body = chats;
+    ctx.status = 200;
+  }
 };
 
 export default {

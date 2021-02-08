@@ -1,3 +1,4 @@
+import { boolean } from 'joi';
 import mongoose, { Schema, Model, Document } from 'mongoose';
 
 export interface Post {
@@ -32,7 +33,10 @@ const PostSchema: Schema<PostDocument> = new mongoose.Schema(
       type: String,
       default: 'free',
     },
-
+    notice: {
+      type: Boolean,
+      default: false,
+    },
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

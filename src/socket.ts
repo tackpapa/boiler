@@ -10,6 +10,15 @@ const init = (server: Server) => {
     socket.on('createSession', async (userId) => {
       await db.sessions.deleteMany({ userId });
       await db.sessions.create({ userId, connectionId: socket.id });
+      // socket.emit('message', {
+      //   type: 'CREATE_CHAT#SUCCESS',
+      //   payload: {
+      //     _id: '1',
+      //     from: '1',
+      //     to: '2',
+      //     msg: 'asdf',
+      //   },
+      // });
     });
 
     socket.on('disconnect', async () => {

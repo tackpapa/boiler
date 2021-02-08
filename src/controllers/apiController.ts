@@ -21,6 +21,7 @@ const tag: Controller = async (ctx) => {
 const hotPosts: Controller = async (ctx) => {
   const posts = await db.posts
     .find()
+    .populate('author')
     .sort({ views: -1 })
     .sort({ _id: -1 })
     .limit(20);
@@ -73,7 +74,6 @@ const chatlist: Controller = async (ctx) => {
   ]);
   const t = list.map((i) => db.users.findOne({ _id: i }));
   const item = await Promise.all(t);
-  console.log(item);
   ctx.body = item;
   ctx.status = 202;
 };

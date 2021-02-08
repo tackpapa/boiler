@@ -17,7 +17,12 @@ const app = new Koa();
 
 app
   .use(jwtParser)
-  .use(bodyParser({ multipart: true, formidable: {} }))
+  .use(
+    bodyParser({
+      multipart: true,
+      formidable: { maxFileSize: 10 * 1024 * 1024 },
+    })
+  )
   .use(router.allowedMethods())
   .use(koaHelmet())
   .use(koaCors())

@@ -27,6 +27,10 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       ref: 'Users',
     },
     context: String,
+    notice: {
+      type: Boolean,
+      default: false,
+    },
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

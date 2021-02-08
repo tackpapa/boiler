@@ -33,6 +33,10 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
       },
     ],
     context: String,
+    notice: {
+      type: Boolean,
+      default: false,
+    },
     pics: {
       type: [String],
       default: [],
