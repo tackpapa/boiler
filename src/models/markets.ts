@@ -31,6 +31,10 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    category: {
+      type: String,
+      default: 'free',
+    },
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,

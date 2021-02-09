@@ -69,9 +69,13 @@ const findone: Controller = async (ctx) => {
 
 const search: Controller = async (ctx) => {
   const { query } = ctx.params;
-  const post = await db.markets.find({ $text: { $search: query } });
+  const post = await db.markets
+    .find({ $text: { $search: query } })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(10);
   ctx.status = 200;
-  ctx.body = post;
+  ctx.body = { data: post, type: query };
 };
 
 const latest: Controller = async (ctx) => {
@@ -84,6 +88,17 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const byCategory: Controller = async (ctx) => {
+  const { query } = ctx.params;
+  const post = await db.markets
+    .find({ category: query })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(5);
+  ctx.status = 200;
+  ctx.body = { data: post, type: query };
+};
+
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post = await db.markets.findOneAndRemove({ _id: id });
@@ -91,4 +106,12 @@ const deleteone: Controller = async (ctx) => {
   ctx.body = 'deleted;';
 };
 
-export default { create, deleteone, update, search, findone, latest };
+export default {
+  create,
+  deleteone,
+  update,
+  search,
+  byCategory,
+  findone,
+  latest,
+};

@@ -33,6 +33,10 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
       },
     ],
     context: String,
+    category: {
+      type: String,
+      default: 'free',
+    },
     notice: {
       type: Boolean,
       default: false,

@@ -70,9 +70,13 @@ const findone: Controller = async (ctx) => {
 
 const search: Controller = async (ctx) => {
   const { query } = ctx.params;
-  const post = await db.posts.find({ $text: { $search: query } });
+  const post = await db.posts
+    .find({ $text: { $search: query } })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(10);
   ctx.status = 200;
-  ctx.body = post;
+  ctx.body = { data: post, type: query };
 };
 
 const byCategory: Controller = async (ctx) => {
