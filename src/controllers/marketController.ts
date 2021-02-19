@@ -2,6 +2,9 @@ import db from 'db';
 import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
+import sharp from 'sharp';
+
+const { PassThrough } = require('stream');
 
 const create: Controller = async (ctx) => {
   const { title, context, tags, price, location } = ctx.request.body;
@@ -11,30 +14,55 @@ const create: Controller = async (ctx) => {
     { $inc: { exp: +10 } }
   );
   user?.save();
-  const newtag = JSON.parse(tags);
+
   const item = await db.markets.create({
     title,
     context,
     author,
-    tags: newtag,
+    tags,
     price,
     location,
   });
+  if (ctx.request.files.pic === undefined) {
+    return (ctx.status = 200), (ctx.body = item);
+  }
+  if (ctx.request.files.pic.length > 0) {
+    const arr = ctx.request.files.pic;
 
-  []
-    .concat(ctx.request.files.pic)
-    .forEach(async ({ path }: { path: string }, i: number) => {
+    arr.forEach(async ({ path }: { path: string }, i: number) => {
+      const body = sharp(path).resize(200, 200).png();
       var param = {
         Bucket: 'ridasprod',
         Key: `marketimage/${item._id + i}`,
         ACL: 'public-read',
-        Body: await fs.createReadStream(path),
+        Body: body.pipe(PassThrough()),
         ContentType: 'image/png',
       };
       const lala = await upload(param);
       await (item as any).pics.push(lala.Location);
-      item.save();
+      if (i === arr.length - 1) {
+        await item.save();
+      }
     });
+  } else {
+    const arr = [ctx.request.files.pic];
+
+    arr.forEach(async ({ path }: { path: string }, i: number) => {
+      const body = sharp(path).resize(200, 200).png();
+      var param = {
+        Bucket: 'ridasprod',
+        Key: `marketimage/${item._id + i}`,
+        ACL: 'public-read',
+        Body: body.pipe(PassThrough()),
+        ContentType: 'image/png',
+      };
+      const lala = await upload(param);
+      await (item as any).pics.push(lala.Location);
+      if (i === arr.length - 1) {
+        await item.save();
+      }
+    });
+  }
 
   ctx.status = 200;
   ctx.body = item;
@@ -42,7 +70,7 @@ const create: Controller = async (ctx) => {
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags, price, location } = ctx.request.body;
+  const { context, title, tags, price, location, category } = ctx.request.body;
   const newtag = JSON.parse(tags);
   const author = ctx.state.user._id;
   const post = await db.markets.findOneAndUpdate(
@@ -52,6 +80,7 @@ const update: Controller = async (ctx) => {
       tags: newtag,
       title: title,
       price: price,
+      cateogory: category,
       location: location,
     }
   );
@@ -75,7 +104,7 @@ const search: Controller = async (ctx) => {
     .sort({ _id: -1 })
     .limit(10);
   ctx.status = 200;
-  ctx.body = { data: post, type: query };
+  ctx.body = { data: post, type: 'result' };
 };
 
 const latest: Controller = async (ctx) => {

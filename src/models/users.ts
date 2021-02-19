@@ -22,7 +22,7 @@ const UserSchema: Schema = new mongoose.Schema(
       default: 0,
     },
     password: String,
-    cell: Number,
+    cell: String,
     kakaoid: String,
     accessToken: String,
     profilepic: String,

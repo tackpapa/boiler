@@ -6,6 +6,7 @@ import generateToken from 'utils/jwt';
 import upload from '../utils/s3';
 import fs from 'fs';
 import sharp from 'sharp';
+var ObjectId = require('mongoose').Types.ObjectId;
 
 const { PassThrough } = require('stream');
 
@@ -70,7 +71,14 @@ const login: Controller = async (ctx) => {
   }
   ctx.status = 200;
   const token = await generateToken({ _id: user.id, email: user.email });
-  ctx.body = { _id: user.id, token, email, name: user.name };
+  ctx.body = {
+    _id: user.id,
+    token,
+    email,
+    name: user.name,
+    exp: user.exp,
+    profilepic: user.profilepic,
+  };
   return;
 };
 
@@ -112,6 +120,7 @@ const findone: Controller = async (ctx) => {
 const uploadProfile: Controller = async (ctx) => {
   const user: any = await db.users.findOne({ _id: ctx.state.user._id });
   const { path } = ctx.request.files.pic;
+  console.log({ path }, 'zzsdfkjsdhfjkshdjfkhksj');
   const body = sharp(path).resize(60, 60).png();
   const param = {
     Bucket: 'ridasprod',
@@ -124,18 +133,20 @@ const uploadProfile: Controller = async (ctx) => {
   (user as any).profilepic = up.Location;
   user.save();
   ctx.status = 200;
+  ctx.body = user;
 };
 
 const userprofile: Controller = async (ctx) => {
   const userid = ctx.state.user._id;
-  const user = await db.users.find({ _id: userid });
-  const posts = await db.posts.find({ author: userid });
-  const jobs = await db.jobs.find({ author: userid });
-  const markets = await db.markets.find({ author: userid });
-  const comments = await db.comments.find({ author: userid });
-
+  const posts = await db.posts.find({ author: ObjectId(userid) }).exec();
+  const jobs = await db.jobs.find({ author: ObjectId(userid) }).exec();
+  const markets = await db.markets.find({ author: ObjectId(userid) }).exec();
   ctx.status = 200;
-  ctx.body = { user, posts, jobs, markets, comments };
+  ctx.body = {
+    post: posts,
+    job: jobs,
+    market: markets,
+  };
 };
 
 const logout: Controller = (ctx) => {
