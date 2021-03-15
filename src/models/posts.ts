@@ -8,6 +8,7 @@ export interface Post {
   pics: string[];
   tags: string[];
   views: number;
+  category: string;
 }
 
 export interface PostDocument extends Post, Document {

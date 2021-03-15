@@ -142,10 +142,10 @@ const latest: Controller = async (ctx) => {
 
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  await db.posts.findOneAndRemove({ _id: id });
+  const cola = await db.posts.findOneAndRemove({ _id: id });
   await db.comments.deleteMany({ post: id }).exec;
   ctx.status = 200;
-  ctx.body = id;
+  ctx.body = { id: id, category: cola?.category };
 };
 
 export default {

@@ -3,13 +3,18 @@ import { Controller } from './types';
 import { io } from 'socket';
 
 const send: Controller = async (ctx) => {
-  const { msg, targetId } = ctx.request.body;
+  const { msg, to } = ctx.request.body;
+  console.log(ctx.request.body);
   const item = await db.chats.create({
     from: ctx.state.user._id,
-    to: targetId,
+    to,
     msg,
   });
-  const target = await db.sessions.findOne({ userId: targetId });
+  item
+    .populate('to', 'name profilepic createdAt')
+    .populate('from', 'name profilepic createdAt')
+    .execPopulate();
+  const target = await db.sessions.findOne({ userId: to });
   if (target) {
     io.to(target.connectionId).emit('chat', msg);
   } else {
@@ -30,7 +35,7 @@ const bringchats: Controller = async (ctx) => {
       .populate('to', 'name profilepic createdAt')
       .populate('from', 'name profilepic createdAt');
 
-    ctx.body = chats;
+    ctx.body = { chats: chats, id: ctx.state.user._id };
     ctx.status = 200;
   } else {
     const chats = await db.chats
@@ -40,7 +45,7 @@ const bringchats: Controller = async (ctx) => {
       .populate('to', 'name profilepic createdAt')
       .populate('from', 'name profilepic createdAt');
 
-    ctx.body = chats;
+    ctx.body = { chats: chats, id: ctx.state.user._id };
     ctx.status = 200;
   }
 };
