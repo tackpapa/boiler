@@ -10,8 +10,8 @@ router.post('/create', JobController.create);
 router.get('/deleteone/:id', JobController.deleteone);
 router.get('/findone/:id', JobController.findone);
 router.get('/search/:query', JobController.search);
-router.get('/bycategory/:query', JobController.byCategory);
-router.get('/latest', JobController.latest);
+router.get('/bycategory/:query/:last', JobController.byCategory);
+router.get('/latest/:last', JobController.latest);
 router.post('/update/:id', JobController.update);
 
 export default router;

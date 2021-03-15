@@ -10,4 +10,8 @@ const upload = async (param: any) => {
   return await s3.upload(param).promise();
 };
 
+export const remove = async (param: any) => {
+  return await s3.deleteObject(param).promise();
+};
+
 export default upload;

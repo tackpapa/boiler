@@ -13,7 +13,7 @@ const create: Controller = async (ctx) => {
     text,
     author: author,
     post,
-    postmodel,
+    PostModel: postmodel,
     target,
   });
   const map: {
@@ -29,6 +29,7 @@ const create: Controller = async (ctx) => {
     cmtpush?.save();
   } catch (err) {}
 
+  ctx.body = comment;
   ctx.status = 200;
 };
 
@@ -54,7 +55,11 @@ const deleteone: Controller = async (ctx) => {
 
 const getcomments: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const comments: any = await db.comments.find({ target: id });
+  const comments: any = await db.comments
+    .find({ post: id })
+    .populate('author')
+    .sort({ _id: -1 });
+
   ctx.status = 200;
   ctx.body = comments;
 };

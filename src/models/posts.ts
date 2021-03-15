@@ -66,6 +66,7 @@ PostSchema.index({
   tags: 'text',
   context: 'text',
 });
+
 PostSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();

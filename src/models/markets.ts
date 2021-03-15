@@ -70,6 +70,7 @@ MarketSchema.index({
   context: 'text',
   price: 'text',
 });
+
 MarketSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();

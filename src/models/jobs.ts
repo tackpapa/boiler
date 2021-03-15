@@ -66,6 +66,7 @@ JobSchema.index({
   context: 'text',
   location: 'text',
 });
+
 JobSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();

@@ -6,7 +6,6 @@ import marketRouter from './marketRouter';
 import apiRouter from './apiRouter';
 import bannerRouter from './bannerRouter';
 import jobRouter from './jobRouter';
-import tier from './../controllers/tier';
 import chatRouter from './chatRouter';
 
 const router = new Router();
@@ -20,9 +19,7 @@ router.use(jobRouter.routes());
 router.use(chatRouter.routes());
 
 router.get('/', (ctx) => {
-  const _tier = tier(322);
-  console.log(_tier);
-  ctx.body = _tier;
+  ctx.body = 'welcome to bykers';
 });
 
 export default router;

@@ -34,5 +34,3 @@ function Listening() {
 const server = http.createServer(app.callback());
 socket(server);
 server.listen(process.env.PORT, Listening);
-
-// 채팅세션, 노티피케이션클라, , 몽고레플리카설정 마스터 슬레이브,

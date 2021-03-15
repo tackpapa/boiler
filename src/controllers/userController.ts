@@ -3,7 +3,7 @@ import { Controller } from './types';
 const crypto = require('crypto');
 import { Joi } from 'koa-joi-router';
 import generateToken from 'utils/jwt';
-import upload from '../utils/s3';
+import upload, { remove } from '../utils/s3';
 import fs from 'fs';
 import sharp from 'sharp';
 var ObjectId = require('mongoose').Types.ObjectId;
@@ -89,10 +89,15 @@ const update: Controller = async (ctx) => {
     var hashed = hash(password);
     user = await db.users.findOneAndUpdate(
       { email },
-      { password: hashed, name, cell, memo }
+      { password: hashed, name, cell, memo },
+      { new: true }
     );
   } else {
-    user = await db.users.findOneAndUpdate({ email }, { name, cell, memo });
+    user = await db.users.findOneAndUpdate(
+      { email },
+      { name, cell, memo },
+      { new: true }
+    );
   }
   ctx.status = 200;
   ctx.body = user;
@@ -120,11 +125,16 @@ const findone: Controller = async (ctx) => {
 const uploadProfile: Controller = async (ctx) => {
   const user: any = await db.users.findOne({ _id: ctx.state.user._id });
   const { path } = ctx.request.files.pic;
-  console.log({ path }, 'zzsdfkjsdhfjkshdjfkhksj');
   const body = sharp(path).resize(60, 60).png();
+
+  const ret: any = await remove({
+    Bucket: 'ridasprod',
+    Key: user.profilepic.substr(user.profilepic.indexOf('profileimage')),
+  });
+
   const param = {
     Bucket: 'ridasprod',
-    Key: `profileimage/${user._id}`,
+    Key: `profileimage/${user._id}_${new Date().getTime()}`,
     ACL: 'public-read',
     Body: body.pipe(PassThrough()),
     ContentType: 'image/png',
@@ -132,15 +142,25 @@ const uploadProfile: Controller = async (ctx) => {
   const up = await upload(param);
   (user as any).profilepic = up.Location;
   user.save();
+
   ctx.status = 200;
   ctx.body = user;
 };
 
 const userprofile: Controller = async (ctx) => {
   const userid = ctx.state.user._id;
-  const posts = await db.posts.find({ author: ObjectId(userid) }).exec();
-  const jobs = await db.jobs.find({ author: ObjectId(userid) }).exec();
-  const markets = await db.markets.find({ author: ObjectId(userid) }).exec();
+  const posts = await db.posts
+    .find({ author: ObjectId(userid) })
+    .populate('author')
+    .exec();
+  const jobs = await db.jobs
+    .find({ author: ObjectId(userid) })
+    .populate('author')
+    .exec();
+  const markets = await db.markets
+    .find({ author: ObjectId(userid) })
+    .populate('author')
+    .exec();
   ctx.status = 200;
   ctx.body = {
     post: posts,

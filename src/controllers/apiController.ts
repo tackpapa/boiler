@@ -1,5 +1,4 @@
 import db from 'db';
-import { Document } from 'mongoose';
 import { Controller } from './types';
 
 const home: Controller = async (ctx) => {
@@ -7,6 +6,15 @@ const home: Controller = async (ctx) => {
   const jobs = await db.jobs.find().sort({ _id: -1 }).limit(5);
   const markets = await db.markets.find().sort({ _id: -1 }).limit(5);
   ctx.body = { posts, jobs, markets };
+};
+
+const hotsearch: Controller = async (ctx) => {
+  const words = await db.searches
+    .find({ views: { $gt: 1 } })
+    .sort({ views: 'descending' })
+    .limit(10);
+
+  ctx.body = words;
 };
 
 const tag: Controller = async (ctx) => {
@@ -111,6 +119,7 @@ export default {
   tag,
   hotPosts,
   jobs,
+  hotsearch,
   hotJobs,
   products,
   hotProducts,

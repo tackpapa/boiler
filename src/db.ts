@@ -8,6 +8,7 @@ import sessions from './models/sessions';
 import jobs from './models/jobs';
 import chats from './models/chats';
 import categorys from './models/categorys';
+import searches from './models/searches';
 
 mongoose.set('useCreateIndex', true);
 
@@ -35,4 +36,5 @@ export default {
   banners,
   jobs,
   categorys,
+  searches,
 };

@@ -23,8 +23,9 @@ const create: Controller = async (ctx) => {
     tags,
     category,
   });
+  const post = await db.posts.findOne({ _id: item._id }).populate('author');
   if (ctx.request.files.pic === undefined) {
-    return (ctx.status = 200), (ctx.body = item);
+    return (ctx.status = 200), (ctx.body = post);
   }
   if (ctx.request.files.pic.length > 0) {
     const arr = ctx.request.files.pic;
@@ -63,8 +64,9 @@ const create: Controller = async (ctx) => {
       }
     });
   }
+
   ctx.status = 200;
-  ctx.body = item;
+  ctx.body = post;
 };
 
 const update: Controller = async (ctx) => {
@@ -78,9 +80,10 @@ const update: Controller = async (ctx) => {
       tags: newtag,
       title: title,
       category: category,
-    }
+    },
+    { new: true }
   );
-  (post as any).save();
+
   ctx.status = 200;
   ctx.body = post;
 };
@@ -98,6 +101,12 @@ const findone: Controller = async (ctx) => {
 
 const search: Controller = async (ctx) => {
   const { query } = ctx.params;
+  const check = await db.searches.findOne({ query });
+  if (check) {
+    check.viewUp();
+  } else {
+    db.searches.create({ query });
+  }
   const post = await db.posts
     .find({ $text: { $search: query } })
     .populate('author')
@@ -108,31 +117,35 @@ const search: Controller = async (ctx) => {
 };
 
 const byCategory: Controller = async (ctx) => {
-  const { query } = ctx.params;
+  const { query, last } = ctx.params;
   const post = await db.posts
     .find({ category: query })
+    .where('createdAt')
+    .lt(last)
     .populate('author')
     .sort({ _id: -1 })
-    .limit(20);
+    .limit(10);
   ctx.status = 200;
   ctx.body = { data: post, type: query };
 };
 
 const latest: Controller = async (ctx) => {
+  const { last } = ctx.params;
   const posts = await db.posts
-    .find()
+    .find({ createdAt: { $lt: last } })
     .populate('author')
     .sort({ _id: -1 })
-    .limit(30);
+    .limit(15);
   ctx.status = 200;
   ctx.body = posts;
 };
 
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.posts.findOneAndRemove({ _id: id });
+  await db.posts.findOneAndRemove({ _id: id });
+  await db.comments.deleteMany({ post: id }).exec;
   ctx.status = 200;
-  ctx.body = 'deleted;';
+  ctx.body = id;
 };
 
 export default {
