@@ -1,11 +1,15 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 
 export interface Chat {
+  _id: string;
   msg: string;
+  createdAt: string;
 }
 
 export interface ChatDocument extends Chat, Document {
   msg: string;
+  _id: string;
+  createdAt: string;
 }
 
 export interface ChatModel extends Model<ChatDocument> {}
@@ -21,11 +25,6 @@ const ChatSchema: Schema<ChatDocument> = new mongoose.Schema(
       ref: 'Users',
     },
     msg: String,
-    expireAt: {
-      type: Date,
-      default: new Date(),
-      expires: 604800,
-    },
   },
   {
     timestamps: true,

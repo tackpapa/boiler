@@ -1,11 +1,10 @@
 import db from 'db';
 import { Controller } from './types';
 const crypto = require('crypto');
-import { Joi } from 'koa-joi-router';
 import generateToken from 'utils/jwt';
 import upload, { remove } from '../utils/s3';
-import fs from 'fs';
 import sharp from 'sharp';
+import fetch from 'node-fetch';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const { PassThrough } = require('stream');
@@ -17,69 +16,70 @@ const hash = (_password: any) => {
     .digest('hex');
 };
 
-const create: Controller = async (ctx) => {
-  const { email, password, name, cell } = ctx.request.body;
-  var pattern = /\S+@\S+\.\S+/;
-  const emailVal = pattern.test(email);
-  if (emailVal === false) {
-    ctx.status = 401;
-    return;
-  }
-  const hashed = hash(password);
-  const man = await db.users.findOne({ email });
-  if (man) {
-    ctx.status = 403;
-  } else {
-    await db.users.create({
-      email,
-      password: hashed,
-      name,
-      cell,
-    });
-    ctx.status = 200;
-    const user1 = await db.users.findOne({
-      email,
-    });
-    ctx.body = user1;
-  }
-};
-
 const login: Controller = async (ctx) => {
-  const { email, password } = ctx.request.body;
-  const hashed = hash(password);
-  const schema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
+  const { code } = ctx.request.body;
+  let payload = {};
+  const client_id = '15ee5ed91fe2db70dd5cb824065507c6';
+  const promise1 = await fetch('https://kauth.kakao.com/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded',
+    },
+    body: `grant_type=authorization_code&client_id=${client_id}&redirect_uri=http://byker.s3-website.ap-northeast-2.amazonaws.com/&code=${code}`,
   });
-  schema
-    .validateAsync({ email, password })
-    .then((result) => {
-      ctx.request.body = result;
-    })
-    .catch((err) => {
-      throw new Error('Failed to validate input ' + err.details[0].message);
+  const json1 = await promise1.json();
+
+  const promise2 = fetch('https://kapi.kakao.com/v2/user/me', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${json1.access_token}`,
+      'Content-type': 'application/x-www-form-urlencoded',
+    },
+  });
+  const json2 = await (await promise2).json();
+  const man: any = await db.users.findOne({
+    email: json2.kakao_account.email,
+  });
+
+  if (man) {
+    const token = await generateToken({
+      _id: man._id,
+      email: man.email,
     });
-  let user: any = null;
-  try {
-    user = await db.users.findOne({ email });
-  } catch (e) {
-    ctx.throw(500, e);
+
+    const payload2 = {
+      _id: man._id,
+      token,
+      email: man.email,
+      name: man.name,
+      exp: man.exp,
+      profilepic: man.profilepic,
+    };
+    payload = payload2;
+  } else {
+    const newuser: any = await db.users.create({
+      email: json2.kakao_account.email,
+      name: json2.properties.nickname,
+      profilepic: json2.thumbnail_image,
+    });
+    const token = await generateToken({
+      _id: newuser._id,
+      email: newuser.email,
+    });
+
+    const payload3 = {
+      _id: newuser._id,
+      token,
+      email: newuser.email,
+      name: newuser.name,
+      exp: newuser.exp,
+      profilepic: newuser.profilepic,
+    };
+    payload = payload3;
   }
-  if (!user || user.password !== `${hashed}`) {
-    ctx.status = 403; // Forbidden
-    return;
-  }
+  console.log(payload, 'zzzz');
+  ctx.body = payload;
   ctx.status = 200;
-  const token = await generateToken({ _id: user.id, email: user.email });
-  ctx.body = {
-    _id: user.id,
-    token,
-    email,
-    name: user.name,
-    exp: user.exp,
-    profilepic: user.profilepic,
-  };
-  return;
 };
 
 const update: Controller = async (ctx) => {
@@ -174,7 +174,6 @@ const logout: Controller = (ctx) => {
 };
 
 export default {
-  create,
   login,
   update,
   deleteone,

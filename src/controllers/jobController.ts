@@ -81,7 +81,7 @@ const update: Controller = async (ctx) => {
       tags: newtag,
       title: title,
       location: location,
-      category: byCategory,
+      category: category,
     },
     { new: true }
   );
@@ -103,7 +103,7 @@ const findone: Controller = async (ctx) => {
 
 const byCategory: Controller = async (ctx) => {
   const { query, last } = ctx.params;
-  console.log(ctx.params, 'dddd');
+
   const post = await db.jobs
     .find({ category: query })
     .where('createdAt')
@@ -145,10 +145,10 @@ const search: Controller = async (ctx) => {
 
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  await db.jobs.findOneAndRemove({ _id: id });
+  const cola = await db.jobs.findOneAndRemove({ _id: id });
   await db.comments.deleteMany({ post: id }).exec;
   ctx.status = 200;
-  ctx.body = id;
+  ctx.body = { id: id, category: cola?.category };
 };
 
 export default {

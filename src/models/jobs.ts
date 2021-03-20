@@ -8,6 +8,7 @@ export interface Job {
   tags: string[];
   views: number;
   location: number;
+  category: string;
 }
 
 export interface JobDocument extends Job, Document {

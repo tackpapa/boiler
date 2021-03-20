@@ -3,6 +3,9 @@ import { Model, Document } from 'mongoose';
 export interface User extends LocalRegisterPayload {
   hash: string;
   salt: string;
+  exp: number;
+  profilepic: string;
+  cell: number;
 }
 
 export interface UserDocument extends User, Document {
@@ -18,5 +21,5 @@ export interface UserModel extends Model<UserDocument> {
 export interface LocalRegisterPayload {
   email: string;
   name: string;
-  password: string;
+  profilepic: string;
 }

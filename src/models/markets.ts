@@ -8,6 +8,7 @@ export interface Market {
   tags: string[];
   views: number;
   price: number;
+  category: string;
 }
 
 export interface MarketDocument extends Market, Document {

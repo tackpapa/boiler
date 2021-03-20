@@ -4,13 +4,12 @@ import { io } from 'socket';
 
 const send: Controller = async (ctx) => {
   const { msg, to } = ctx.request.body;
-  console.log(ctx.request.body);
   const item = await db.chats.create({
     from: ctx.state.user._id,
     to,
     msg,
   });
-  item
+  await item
     .populate('to', 'name profilepic createdAt')
     .populate('from', 'name profilepic createdAt')
     .execPopulate();
@@ -20,7 +19,7 @@ const send: Controller = async (ctx) => {
   } else {
     console.error;
   }
-  console.log(item, 'serverslkjfksdf');
+
   ctx.body = item;
   ctx.status = 200;
 };

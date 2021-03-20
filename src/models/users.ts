@@ -1,4 +1,13 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { ObjectId, Schema } from 'mongoose';
+
+export interface User {
+  email: string;
+  name: string;
+  exp: number;
+  profilepic: string;
+  cell: number;
+  _id: ObjectId;
+}
 
 const UserSchema: Schema = new mongoose.Schema(
   {
@@ -21,9 +30,9 @@ const UserSchema: Schema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    password: String,
+
     cell: String,
-    kakaoid: String,
+
     accessToken: String,
     profilepic: String,
     level: {

@@ -1,6 +1,7 @@
 import Router from 'koa-router';
 import UserController from 'controllers/userController';
 import { requireAuth } from 'utils/jwt';
+import { Context } from 'koa';
 
 const router = new Router({
   prefix: '/user',
@@ -8,7 +9,6 @@ const router = new Router({
 
 router.get('/:id', UserController.findone);
 router.get('/profile/:id', UserController.userprofile);
-router.post('/create', UserController.create);
 router.post('/login', UserController.login);
 router.post('/update', requireAuth, UserController.update);
 router.get('/deleteuser/:id', UserController.deleteone);
