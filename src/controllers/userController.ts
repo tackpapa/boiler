@@ -5,6 +5,7 @@ import generateToken from 'utils/jwt';
 import upload, { remove } from '../utils/s3';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
+import { createExportDeclaration } from 'typescript';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const { PassThrough } = require('stream');
@@ -37,6 +38,7 @@ const login: Controller = async (ctx) => {
     },
   });
   const json2 = await (await promise2).json();
+
   const man: any = await db.users.findOne({
     email: json2.kakao_account.email,
   });
@@ -54,6 +56,7 @@ const login: Controller = async (ctx) => {
       name: man.name,
       exp: man.exp,
       profilepic: man.profilepic,
+      liked: man.liked,
     };
     payload = payload2;
   } else {
@@ -74,10 +77,10 @@ const login: Controller = async (ctx) => {
       name: newuser.name,
       exp: newuser.exp,
       profilepic: newuser.profilepic,
+      liked: newuser.liked,
     };
     payload = payload3;
   }
-  console.log(payload, 'zzzz');
   ctx.body = payload;
   ctx.status = 200;
 };
@@ -170,6 +173,7 @@ const userprofile: Controller = async (ctx) => {
 };
 
 const logout: Controller = (ctx) => {
+  ctx.state.user = null;
   ctx.status = 200;
 };
 

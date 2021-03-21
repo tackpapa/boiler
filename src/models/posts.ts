@@ -9,10 +9,13 @@ export interface Post {
   tags: string[];
   views: number;
   category: string;
+  likes: number;
 }
 
 export interface PostDocument extends Post, Document {
   viewUp: () => void;
+  likeDown: () => void;
+  likeUp: () => void;
   comments: string;
   push: () => void;
 }
@@ -56,6 +59,10 @@ const PostSchema: Schema<PostDocument> = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    likes: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
@@ -70,6 +77,14 @@ PostSchema.index({
 
 PostSchema.methods.viewUp = async function () {
   this.views += 1;
+  this.save();
+};
+PostSchema.methods.likeUp = async function () {
+  this.likes += 1;
+  this.save();
+};
+PostSchema.methods.likeDown = async function () {
+  this.likes -= 1;
   this.save();
 };
 

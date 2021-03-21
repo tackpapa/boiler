@@ -65,9 +65,9 @@ const create: Controller = async (ctx) => {
       }
     });
   }
-
+  const post2 = await db.markets.findOne({ _id: item._id }).populate('author');
   ctx.status = 200;
-  ctx.body = item;
+  ctx.body = post2;
 };
 
 const update: Controller = async (ctx) => {

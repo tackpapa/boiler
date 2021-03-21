@@ -9,6 +9,8 @@ const router = new Router({
 router.post('/create', PostController.create);
 router.get('/deleteone/:id', PostController.deleteone);
 router.get('/findone/:id', PostController.findone);
+router.get('/likeone/:id', PostController.likeone);
+router.get('/dislikeone/:id', PostController.dislikeone);
 router.get('/search/:query', PostController.search);
 router.get('/latest/:last', PostController.latest);
 router.get('/bycategory/:query/:last', PostController.byCategory);

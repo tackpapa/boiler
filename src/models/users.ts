@@ -7,6 +7,7 @@ export interface User {
   profilepic: string;
   cell: number;
   _id: ObjectId;
+  liked: string[];
 }
 
 const UserSchema: Schema = new mongoose.Schema(
@@ -32,7 +33,12 @@ const UserSchema: Schema = new mongoose.Schema(
     },
 
     cell: String,
-
+    liked: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Posts',
+      },
+    ],
     accessToken: String,
     profilepic: String,
     level: {

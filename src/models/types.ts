@@ -6,6 +6,7 @@ export interface User extends LocalRegisterPayload {
   exp: number;
   profilepic: string;
   cell: number;
+  liked: string[];
 }
 
 export interface UserDocument extends User, Document {

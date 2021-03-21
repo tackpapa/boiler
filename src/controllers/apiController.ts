@@ -13,7 +13,6 @@ const hotsearch: Controller = async (ctx) => {
     .find({ views: { $gt: 1 } })
     .sort({ views: 'descending' })
     .limit(10);
-
   ctx.body = words;
 };
 
@@ -27,13 +26,34 @@ const tag: Controller = async (ctx) => {
 };
 
 const hotPosts: Controller = async (ctx) => {
+  const { num } = ctx.params;
+  var today = new Date();
+  today.setDate(today.getDate() - 1);
+  var week = new Date();
+  week.setDate(today.getDate() - 7);
+  var month = new Date();
+  month.setDate(today.getDate() - 30);
+
+  const numToAction: any = {
+    today: today,
+    week: week,
+    month: month,
+  };
+  const numToType: any = {
+    today: 'hot1',
+    week: 'hot7',
+    month: 'hot30',
+  };
+
   const posts = await db.posts
-    .find()
+    .find({
+      createdAt: { $gte: numToAction[num as keyof typeof numToAction] },
+    })
     .populate('author')
-    .sort({ views: -1 })
-    .sort({ _id: -1 })
-    .limit(20);
-  ctx.body = posts;
+    .sort({ likes: -1 })
+    .limit(15);
+
+  ctx.body = { posts: posts, type: numToType[num as keyof typeof numToType] };
 };
 
 const jobs: Controller = async (ctx) => {

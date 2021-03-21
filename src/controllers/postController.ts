@@ -3,7 +3,6 @@ import { Controller } from './types';
 import upload from '../utils/s3';
 import fs from 'fs';
 import sharp from 'sharp';
-import { isNamedExportBindings } from 'typescript';
 
 const { PassThrough } = require('stream');
 
@@ -40,7 +39,7 @@ const create: Controller = async (ctx) => {
         ContentType: 'image/png',
       };
       const lala = await upload(param);
-      await (item as any).pics.push(lala.Location);
+      await (item as any).pics.push(lala.Location); //문제있는 부분;
       if (i === arr.length - 1) {
         await item.save();
       }
@@ -64,9 +63,9 @@ const create: Controller = async (ctx) => {
       }
     });
   }
-
+  const post2 = await db.posts.findOne({ _id: item._id }).populate('author');
   ctx.status = 200;
-  ctx.body = post;
+  ctx.body = post2;
 };
 
 const update: Controller = async (ctx) => {
@@ -97,6 +96,30 @@ const findone: Controller = async (ctx) => {
   post?.viewUp();
   ctx.status = 200;
   ctx.body = post;
+};
+
+const likeone: Controller = async (ctx) => {
+  const { id } = ctx.params;
+  const post: any = await db.posts.findOne({ _id: id });
+  const user: any = await db.users.findOne({ _id: ctx.state.user._id });
+  await user.liked.push(post._id);
+  user.save();
+  post?.likeUp();
+  ctx.body = id;
+  ctx.status = 200;
+};
+const dislikeone: Controller = async (ctx) => {
+  const { id } = ctx.params;
+  const post: any = await db.posts.findOne({ _id: id });
+  const user: any = await db.users.findOne({ _id: ctx.state.user._id });
+  const index = user.liked.filter((item: string) =>
+    item === id ? false : true
+  );
+  user.liked = index;
+  user.save();
+  post?.likeDown();
+  ctx.body = id;
+  ctx.status = 200;
 };
 
 const search: Controller = async (ctx) => {
@@ -151,6 +174,8 @@ const deleteone: Controller = async (ctx) => {
 export default {
   create,
   deleteone,
+  likeone,
+  dislikeone,
   update,
   findone,
   search,

@@ -8,7 +8,6 @@ const { PassThrough } = require('stream');
 
 const create: Controller = async (ctx) => {
   const { title, context, tags, location, category } = ctx.request.body;
-
   const author = ctx.state.user._id;
   const user = await db.users.findOneAndUpdate(
     { _id: author },
@@ -65,9 +64,9 @@ const create: Controller = async (ctx) => {
       }
     });
   }
-
+  const post2 = await db.jobs.findOne({ _id: item._id }).populate('author');
   ctx.status = 200;
-  ctx.body = item;
+  ctx.body = post2;
 };
 
 const update: Controller = async (ctx) => {
