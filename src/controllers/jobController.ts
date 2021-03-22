@@ -30,7 +30,7 @@ const create: Controller = async (ctx) => {
   if (ctx.request.files.pic.length > 0) {
     const arr = ctx.request.files.pic;
 
-    arr.forEach(async ({ path }: { path: string }, i: number) => {
+    const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
         Bucket: 'ridasprod',
@@ -45,10 +45,11 @@ const create: Controller = async (ctx) => {
         await item.save();
       }
     });
+    await Promise.all(promises);
   } else {
     const arr = [ctx.request.files.pic];
 
-    arr.forEach(async ({ path }: { path: string }, i: number) => {
+    const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
         Bucket: 'ridasprod',
@@ -63,6 +64,7 @@ const create: Controller = async (ctx) => {
         await item.save();
       }
     });
+    await Promise.all(promises);
   }
   const post2 = await db.jobs.findOne({ _id: item._id }).populate('author');
   ctx.status = 200;

@@ -9,6 +9,7 @@ import jobs from './models/jobs';
 import chats from './models/chats';
 import categorys from './models/categorys';
 import searches from './models/searches';
+import notis from './models/notis';
 
 mongoose.set('useCreateIndex', true);
 
@@ -29,6 +30,7 @@ db.on('error', (error) => console.log(`error on db connection${error}`));
 export default {
   users,
   comments,
+  notis,
   posts,
   markets,
   sessions,

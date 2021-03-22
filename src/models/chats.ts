@@ -1,16 +1,13 @@
-import mongoose, { Schema, Model, Document } from 'mongoose';
+import mongoose, { Schema, Model, Document, ObjectId } from 'mongoose';
 
 export interface Chat {
-  _id: string;
   msg: string;
+  to: ObjectId;
+  from: ObjectId;
   createdAt: string;
 }
 
-export interface ChatDocument extends Chat, Document {
-  msg: string;
-  _id: string;
-  createdAt: string;
-}
+export interface ChatDocument extends Document, Chat {}
 
 export interface ChatModel extends Model<ChatDocument> {}
 

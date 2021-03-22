@@ -7,6 +7,7 @@ import sharp from 'sharp';
 const { PassThrough } = require('stream');
 
 const create: Controller = async (ctx) => {
+  console.log(ctx.request.body);
   const { title, context, tags, category } = ctx.request.body;
   const author = ctx.state.user._id;
   const user = await db.users.findOneAndUpdate(
@@ -29,7 +30,7 @@ const create: Controller = async (ctx) => {
   if (ctx.request.files.pic.length > 0) {
     const arr = ctx.request.files.pic;
 
-    arr.forEach(async ({ path }: { path: string }, i: number) => {
+    const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
         Bucket: 'ridasprod',
@@ -44,10 +45,11 @@ const create: Controller = async (ctx) => {
         await item.save();
       }
     });
+    await Promise.all(promises);
   } else {
     const arr = [ctx.request.files.pic];
 
-    arr.forEach(async ({ path }: { path: string }, i: number) => {
+    const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
         Bucket: 'ridasprod',
@@ -62,6 +64,7 @@ const create: Controller = async (ctx) => {
         await item.save();
       }
     });
+    await Promise.all(promises);
   }
   const post2 = await db.posts.findOne({ _id: item._id }).populate('author');
   ctx.status = 200;
@@ -111,12 +114,12 @@ const likeone: Controller = async (ctx) => {
 const dislikeone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const post: any = await db.posts.findOne({ _id: id });
-  const user: any = await db.users.findOne({ _id: ctx.state.user._id });
-  const index = user.liked.filter((item: string) =>
-    item === id ? false : true
+  await db.users.findByIdAndUpdate(
+    ctx.state.user._id,
+    { $pull: { liked: id } },
+    { upsert: true }
   );
-  user.liked = index;
-  user.save();
+
   post?.likeDown();
   ctx.body = id;
   ctx.status = 200;

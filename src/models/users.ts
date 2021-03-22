@@ -1,4 +1,4 @@
-import mongoose, { ObjectId, Schema } from 'mongoose';
+import mongoose, { ObjectId, Schema, Document, Model } from 'mongoose';
 
 export interface User {
   email: string;
@@ -6,11 +6,15 @@ export interface User {
   exp: number;
   profilepic: string;
   cell: number;
-  _id: ObjectId;
   liked: string[];
+  expotoken: string;
 }
 
-const UserSchema: Schema = new mongoose.Schema(
+export interface UserDocument extends Document, User {}
+
+export interface UserModel extends Model<UserDocument> {}
+
+const UserSchema: Schema<UserDocument> = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -39,6 +43,13 @@ const UserSchema: Schema = new mongoose.Schema(
         ref: 'Posts',
       },
     ],
+    Noti: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Notis',
+      },
+    ],
+    expotoken: String,
     accessToken: String,
     profilepic: String,
     level: {
@@ -51,6 +62,6 @@ const UserSchema: Schema = new mongoose.Schema(
   }
 );
 
-const model = mongoose.model('Users', UserSchema);
+const model: UserModel = mongoose.model<UserDocument>('Users', UserSchema);
 
 export default model;

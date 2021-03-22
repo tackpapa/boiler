@@ -8,6 +8,7 @@ const router = new Router({
 });
 
 router.get('/:id', UserController.findone);
+router.post('/token', requireAuth, UserController.tokensave);
 router.get('/profile/:id', UserController.userprofile);
 router.post('/login', UserController.login);
 router.post('/update', requireAuth, UserController.update);

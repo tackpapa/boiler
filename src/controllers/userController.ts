@@ -5,7 +5,6 @@ import generateToken from 'utils/jwt';
 import upload, { remove } from '../utils/s3';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
-import { createExportDeclaration } from 'typescript';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const { PassThrough } = require('stream');
@@ -63,8 +62,9 @@ const login: Controller = async (ctx) => {
     const newuser: any = await db.users.create({
       email: json2.kakao_account.email,
       name: json2.properties.nickname,
-      profilepic: json2.thumbnail_image,
+      profilepic: json2.properties.thumbnail_image,
     });
+
     const token = await generateToken({
       _id: newuser._id,
       email: newuser.email,
@@ -81,6 +81,7 @@ const login: Controller = async (ctx) => {
     };
     payload = payload3;
   }
+
   ctx.body = payload;
   ctx.status = 200;
 };
@@ -123,6 +124,16 @@ const findone: Controller = async (ctx) => {
   const user = await db.users.findOne({ _id: id });
   ctx.status = 200;
   ctx.body = user;
+};
+
+const tokensave: Controller = async (ctx) => {
+  const { expotoken } = ctx.request.body;
+  const user = await db.users.findByIdAndUpdate(
+    ctx.state.user._id,
+    { expotoken },
+    { new: true }
+  );
+  ctx.status = 200;
 };
 
 const uploadProfile: Controller = async (ctx) => {
@@ -181,6 +192,7 @@ export default {
   login,
   update,
   deleteone,
+  tokensave,
   findone,
   userprofile,
   logout,

@@ -5,9 +5,7 @@ export interface Session {
   userId: string;
 }
 
-export interface SessionDocument extends Session, Document {
-  //method를 넣는다
-}
+export interface SessionDocument extends Session, Document {}
 export interface SessionModel extends Model<SessionDocument> {}
 
 const SessionSchema: Schema<SessionDocument> = new mongoose.Schema({
