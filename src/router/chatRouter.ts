@@ -6,7 +6,7 @@ const router = new Router({
   prefix: '/chat',
 });
 
-router.post('/send', ChatController.send);
-router.get('/bringchats/:date?', ChatController.bringchats);
+router.post('/send', requireAuth, ChatController.send);
+router.get('/bringchats/:date?', requireAuth, ChatController.bringchats);
 
 export default router;

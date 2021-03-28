@@ -5,6 +5,7 @@ import generateToken from 'utils/jwt';
 import upload, { remove } from '../utils/s3';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
+import { IdentityStore } from 'aws-sdk';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const { PassThrough } = require('stream');
@@ -38,9 +39,11 @@ const login: Controller = async (ctx) => {
   });
   const json2 = await (await promise2).json();
 
-  const man: any = await db.users.findOne({
-    email: json2.kakao_account.email,
-  });
+  const man: any = await db.users
+    .findOne({
+      email: json2.kakao_account.email,
+    })
+    .populate('Noti');
 
   if (man) {
     const token = await generateToken({
@@ -56,6 +59,7 @@ const login: Controller = async (ctx) => {
       exp: man.exp,
       profilepic: man.profilepic,
       liked: man.liked,
+      Noti: man.Noti,
     };
     payload = payload2;
   } else {
@@ -78,6 +82,7 @@ const login: Controller = async (ctx) => {
       exp: newuser.exp,
       profilepic: newuser.profilepic,
       liked: newuser.liked,
+      Noti: man.Noti,
     };
     payload = payload3;
   }
@@ -121,7 +126,20 @@ const deleteone: Controller = async (ctx) => {
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const user = await db.users.findOne({ _id: id });
+  const user = await db.users.findOne({ _id: id }).populate('Noti');
+  ctx.status = 200;
+
+  ctx.body = user;
+};
+
+const deletenoti: Controller = async (ctx) => {
+  const { id } = ctx.params;
+  const user = await db.users.findById({ _id: id });
+  await db.notis.deleteMany({ target: id }).exec;
+  if (user) {
+    user.Noti = [];
+    user.save();
+  }
   ctx.status = 200;
   ctx.body = user;
 };
@@ -139,7 +157,7 @@ const tokensave: Controller = async (ctx) => {
 const uploadProfile: Controller = async (ctx) => {
   const user: any = await db.users.findOne({ _id: ctx.state.user._id });
   const { path } = ctx.request.files.pic;
-  const body = sharp(path).resize(60, 60).png();
+  const body = sharp(path).resize(200, 200).png();
 
   const ret: any = await remove({
     Bucket: 'ridasprod',
@@ -190,6 +208,7 @@ const logout: Controller = (ctx) => {
 
 export default {
   login,
+  deletenoti,
   update,
   deleteone,
   tokensave,

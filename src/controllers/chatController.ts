@@ -24,7 +24,7 @@ const send: Controller = async (ctx) => {
   } else {
     const userto = await db.users.findById(to);
     if (userto) {
-      push(userto, `${((item.from as unknown) as User).name} : ${msg}`);
+      push(userto, `[채팅] ${((item.from as unknown) as User).name} : ${msg}`);
     }
     console.error;
   }
@@ -38,11 +38,12 @@ const bringchats: Controller = async (ctx) => {
     const chats = await db.chats
       .find({
         $or: [{ to: ctx.state.user._id }, { from: ctx.state.user._id }],
-        createdAt: { $gt: ctx.params.date },
+        createdAt: {
+          $gt: new Date(parseInt(ctx.params.date, 10)).toISOString(),
+        },
       })
       .populate('to', 'name profilepic createdAt')
       .populate('from', 'name profilepic createdAt');
-
     ctx.body = { chats: chats, id: ctx.state.user._id };
     ctx.status = 200;
   } else {

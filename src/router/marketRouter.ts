@@ -6,12 +6,13 @@ const router = new Router({
   prefix: '/market',
 });
 
-router.post('/create', MarketController.create);
-router.get('/deleteone/:id', MarketController.deleteone);
+router.post('/create', requireAuth, MarketController.create);
+router.get('/deleteone/:id', requireAuth, MarketController.deleteone);
 router.get('/findone/:id', MarketController.findone);
 router.get('/search/:query', MarketController.search);
 router.get('/bycategory/:query/:last', MarketController.byCategory);
 router.get('/latest/:last', MarketController.latest);
-router.post('/update/:id', MarketController.update);
+router.get('/newones/:last', MarketController.newones);
+router.post('/update/:id', requireAuth, MarketController.update);
 
 export default router;

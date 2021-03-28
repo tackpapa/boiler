@@ -7,7 +7,6 @@ import sharp from 'sharp';
 const { PassThrough } = require('stream');
 
 const create: Controller = async (ctx) => {
-  console.log(ctx.request.body);
   const { title, context, tags, category } = ctx.request.body;
   const author = ctx.state.user._id;
   const user = await db.users.findOneAndUpdate(
@@ -29,7 +28,6 @@ const create: Controller = async (ctx) => {
   }
   if (ctx.request.files.pic.length > 0) {
     const arr = ctx.request.files.pic;
-
     const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
@@ -40,7 +38,7 @@ const create: Controller = async (ctx) => {
         ContentType: 'image/png',
       };
       const lala = await upload(param);
-      await (item as any).pics.push(lala.Location); //문제있는 부분;
+      await (item as any).pics.push(lala.Location);
       if (i === arr.length - 1) {
         await item.save();
       }
@@ -48,7 +46,6 @@ const create: Controller = async (ctx) => {
     await Promise.all(promises);
   } else {
     const arr = [ctx.request.files.pic];
-
     const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
@@ -166,6 +163,17 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const newones: Controller = async (ctx) => {
+  const { last } = ctx.params;
+  const posts = await db.posts
+    .find({ createdAt: { $gt: last } })
+    .populate('author')
+    .sort({ _id: -1 });
+
+  ctx.status = 200;
+  ctx.body = posts;
+};
+
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const cola = await db.posts.findOneAndRemove({ _id: id });
@@ -178,6 +186,7 @@ export default {
   create,
   deleteone,
   likeone,
+  newones,
   dislikeone,
   update,
   findone,

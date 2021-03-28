@@ -1,5 +1,6 @@
 import db from 'db';
 import { Controller } from './types';
+import push from '../utils/expo';
 
 const create: Controller = async (ctx) => {
   const { text, post, postmodel, target } = ctx.request.body;
@@ -24,9 +25,24 @@ const create: Controller = async (ctx) => {
     Market: 'markets',
   };
   try {
-    const cmtpush = await db[map[postmodel]].findOne({ _id: post });
+    const cmtpush: any = await db[map[postmodel]]
+      .findOne({ _id: post })
+      .populate('author');
     await (cmtpush as any).comments.push(comment._id);
     cmtpush?.save();
+    if (author._id !== cmtpush.author._id) {
+      const userto = await db.users.findById(`${cmtpush?.author._id}`);
+      if (userto) {
+        push(
+          userto,
+          `${cmtpush.title} 글에 ${author.name}님이 댓글을 달았습니다.`,
+          cmtpush._id,
+          postmodel,
+          'comment'
+        );
+      }
+      console.error;
+    }
   } catch (err) {}
 
   ctx.body = comment;

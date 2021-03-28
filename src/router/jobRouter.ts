@@ -6,12 +6,13 @@ const router = new Router({
   prefix: '/job',
 });
 
-router.post('/create', JobController.create);
-router.get('/deleteone/:id', JobController.deleteone);
+router.post('/create', requireAuth, JobController.create);
+router.get('/deleteone/:id', requireAuth, JobController.deleteone);
 router.get('/findone/:id', JobController.findone);
 router.get('/search/:query', JobController.search);
 router.get('/bycategory/:query/:last', JobController.byCategory);
 router.get('/latest/:last', JobController.latest);
-router.post('/update/:id', JobController.update);
+router.get('/newones/:last', JobController.newones);
+router.post('/update/:id', requireAuth, JobController.update);
 
 export default router;

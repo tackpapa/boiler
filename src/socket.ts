@@ -11,12 +11,11 @@ const init = (server: Server) => {
       await db.sessions.deleteMany({ userId });
       await db.sessions.create({ userId, connectionId: socket.id });
     });
-    // socket.on('background', () => {
-    //   // session 삭제
-    // })
-    socket.on('disconnect', async () => {
+    const deleteSession = async () => {
       await db.sessions.deleteMany({ connectionId: socket.id });
-    });
+    };
+    socket.on('background', deleteSession);
+    socket.on('disconnect', deleteSession);
   });
 };
 

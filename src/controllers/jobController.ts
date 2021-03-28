@@ -127,6 +127,17 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const newones: Controller = async (ctx) => {
+  const { last } = ctx.params;
+  const posts = await db.jobs
+    .find({ createdAt: { $gt: last } })
+    .populate('author')
+    .sort({ _id: -1 });
+
+  ctx.status = 200;
+  ctx.body = posts;
+};
+
 const search: Controller = async (ctx) => {
   const { query } = ctx.params;
   const check = await db.searches.findOne({ query });
@@ -156,6 +167,7 @@ export default {
   create,
   deleteone,
   update,
+  newones,
   byCategory,
   findone,
   search,

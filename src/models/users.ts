@@ -8,6 +8,7 @@ export interface User {
   cell: number;
   liked: string[];
   expotoken: string;
+  Noti: string[];
 }
 
 export interface UserDocument extends Document, User {}

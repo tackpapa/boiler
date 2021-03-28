@@ -1,19 +1,19 @@
 import Router from 'koa-router';
 import UserController from 'controllers/userController';
 import { requireAuth } from 'utils/jwt';
-import { Context } from 'koa';
 
 const router = new Router({
   prefix: '/user',
 });
 
-router.get('/:id', UserController.findone);
+router.get('/:id', requireAuth, UserController.findone);
+router.get('/deletenoti/:id', requireAuth, UserController.deletenoti);
 router.post('/token', requireAuth, UserController.tokensave);
-router.get('/profile/:id', UserController.userprofile);
+router.get('/profile/:id', requireAuth, UserController.userprofile);
 router.post('/login', UserController.login);
 router.post('/update', requireAuth, UserController.update);
-router.get('/deleteuser/:id', UserController.deleteone);
-router.get('/logout', UserController.logout);
-router.post('/uploadprofile', UserController.uploadProfile);
+router.get('/deleteuser/:id', requireAuth, UserController.deleteone);
+router.get('/logout', requireAuth, UserController.logout);
+router.post('/uploadprofile', requireAuth, UserController.uploadProfile);
 
 export default router;

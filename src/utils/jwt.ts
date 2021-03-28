@@ -44,6 +44,7 @@ export const jwtParser = async (ctx: Context, next: () => Promise<any>) => {
       console.log(error);
     }
     ctx.state.user = user;
+
     if (user) {
       const session = await db.sessions.findOne({
         userId: `${user._id}`,

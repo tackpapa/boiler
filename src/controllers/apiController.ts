@@ -1,5 +1,6 @@
 import db from 'db';
 import { Controller } from './types';
+import { Noti } from '../models/notis';
 
 const home: Controller = async (ctx) => {
   const posts = await db.posts.find().sort({ _id: -1 }).limit(5);
