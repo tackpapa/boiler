@@ -32,6 +32,7 @@ const login: Controller = async (ctx) => {
     },
     body: `grant_type=authorization_code&client_id=${client_id}&redirect_uri=${uri_1}&code=${code}`,
   });
+
   const json1 = await promise1.json();
 
   const promise2 = fetch('https://kapi.kakao.com/v2/user/me', {
