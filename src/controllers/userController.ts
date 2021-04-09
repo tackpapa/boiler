@@ -87,7 +87,7 @@ const login: Controller = async (ctx) => {
       exp: newuser.exp,
       profilepic: newuser.profilepic,
       liked: newuser.liked,
-      Noti: man.Noti,
+      Noti: newuser.Noti,
     };
     payload = payload3;
   }
