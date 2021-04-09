@@ -5,7 +5,6 @@ import generateToken from 'utils/jwt';
 import upload, { remove } from '../utils/s3';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
-import { IdentityStore } from 'aws-sdk';
 var ObjectId = require('mongoose').Types.ObjectId;
 
 const { PassThrough } = require('stream');
@@ -18,7 +17,12 @@ const hash = (_password: any) => {
 };
 
 const login: Controller = async (ctx) => {
-  const { code } = ctx.request.body;
+  const { code, uri } = ctx.request.body;
+  let uri_1 = 'http://byker.s3-website.ap-northeast-2.amazonaws.com/';
+  if (uri) {
+    uri_1 = uri;
+  }
+
   let payload = {};
   const client_id = '15ee5ed91fe2db70dd5cb824065507c6';
   const promise1 = await fetch('https://kauth.kakao.com/oauth/token', {
@@ -26,7 +30,7 @@ const login: Controller = async (ctx) => {
     headers: {
       'Content-type': 'application/x-www-form-urlencoded',
     },
-    body: `grant_type=authorization_code&client_id=${client_id}&redirect_uri=http://byker.s3-website.ap-northeast-2.amazonaws.com/&code=${code}`,
+    body: `grant_type=authorization_code&client_id=${client_id}&redirect_uri=${uri_1}&code=${code}`,
   });
   const json1 = await promise1.json();
 
@@ -38,7 +42,6 @@ const login: Controller = async (ctx) => {
     },
   });
   const json2 = await (await promise2).json();
-
   const man: any = await db.users
     .findOne({
       email: json2.kakao_account.email,
@@ -54,6 +57,7 @@ const login: Controller = async (ctx) => {
     const payload2 = {
       _id: man._id,
       token,
+      level: man.level,
       email: man.email,
       name: man.name,
       exp: man.exp,
@@ -127,8 +131,8 @@ const deleteone: Controller = async (ctx) => {
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const user = await db.users.findOne({ _id: id }).populate('Noti');
-  ctx.status = 200;
 
+  ctx.status = 200;
   ctx.body = user;
 };
 
@@ -201,6 +205,16 @@ const userprofile: Controller = async (ctx) => {
   };
 };
 
+const alluser: Controller = async (ctx) => {
+  const { last } = ctx.params;
+  const users = await db.users
+    .find({ createdAt: { $lt: last } })
+    .sort({ _id: -1 })
+    .limit(30);
+  ctx.status = 200;
+  ctx.body = users;
+};
+
 const logout: Controller = (ctx) => {
   ctx.state.user = null;
   ctx.status = 200;
@@ -211,6 +225,7 @@ export default {
   deletenoti,
   update,
   deleteone,
+  alluser,
   tokensave,
   findone,
   userprofile,

@@ -8,6 +8,7 @@ const router = new Router({
 
 router.post('/create', requireAuth, commentController.create);
 router.post('/update/:id', requireAuth, commentController.update);
+router.get('/allcomments/:last', commentController.allcomment);
 router.get('/deleteone/:id', requireAuth, commentController.deleteone);
 router.get('/get/:id', commentController.getcomments);
 

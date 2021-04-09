@@ -13,6 +13,7 @@ router.get('/likeone/:id', requireAuth, PostController.likeone);
 router.get('/dislikeone/:id', requireAuth, PostController.dislikeone);
 router.get('/search/:query', PostController.search);
 router.get('/latest/:last', PostController.latest);
+router.get('/allpost/:last', PostController.allpost);
 router.get('/newones/:last', PostController.newones);
 router.get('/bycategory/:query/:last', PostController.byCategory);
 router.post('/update/:id', requireAuth, PostController.update);

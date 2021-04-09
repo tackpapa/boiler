@@ -12,6 +12,7 @@ router.get('/findone/:id', MarketController.findone);
 router.get('/search/:query', MarketController.search);
 router.get('/bycategory/:query/:last', MarketController.byCategory);
 router.get('/latest/:last', MarketController.latest);
+router.get('/allmarket/:last', MarketController.allmarket);
 router.get('/newones/:last', MarketController.newones);
 router.post('/update/:id', requireAuth, MarketController.update);
 

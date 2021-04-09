@@ -132,6 +132,17 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const allmarket: Controller = async (ctx) => {
+  const { last } = ctx.params;
+  const posts = await db.markets
+    .find({ createdAt: { $lt: last } })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(15);
+  ctx.status = 200;
+  ctx.body = posts;
+};
+
 const newones: Controller = async (ctx) => {
   const { last } = ctx.params;
   const posts = await db.markets
@@ -158,7 +169,7 @@ const byCategory: Controller = async (ctx) => {
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const cola = await db.markets.findOneAndRemove({ _id: id });
-  await db.comments.deleteMany({ post: id }).exec;
+  const lala = db.comments.deleteMany({ post: id }).exec;
   ctx.status = 200;
   ctx.body = { id: id, category: cola?.category };
 };
@@ -166,6 +177,7 @@ const deleteone: Controller = async (ctx) => {
 export default {
   create,
   deleteone,
+  allmarket,
   update,
   search,
   newones,

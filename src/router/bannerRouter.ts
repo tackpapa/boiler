@@ -7,8 +7,8 @@ const router = new Router({
 });
 
 router.get('/home', BannerController.home);
-router.post('/create', requireAuth, BannerController.create);
+router.post('/create', BannerController.create);
 router.get('/banner/:category', BannerController.getbanner);
-router.del('/delete/:id', requireAuth, BannerController.deleteone);
+router.get('/delete/:id', requireAuth, BannerController.deleteone);
 
 export default router;

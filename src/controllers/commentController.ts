@@ -80,4 +80,15 @@ const getcomments: Controller = async (ctx) => {
   ctx.body = comments;
 };
 
-export default { create, deleteone, update, getcomments };
+const allcomment: Controller = async (ctx) => {
+  const { last } = ctx.params;
+  const comments = await db.comments
+    .find({ createdAt: { $lt: last } })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(30);
+  ctx.status = 200;
+  ctx.body = comments;
+};
+
+export default { create, deleteone, update, getcomments, allcomment };

@@ -1,6 +1,6 @@
 import db from 'db';
 import { Controller } from './types';
-import upload from '../utils/s3';
+import upload, { remove } from '../utils/s3';
 import fs from 'fs';
 
 const home: Controller = async (ctx) => {
@@ -35,14 +35,25 @@ const create: Controller = async (ctx) => {
   (item as any).pic = lala.Location;
   item.save();
   ctx.status = 200;
+  ctx.body = item;
 };
 
 const deleteone: Controller = async (ctx) => {
   const id = ctx.params.id;
+  const banner: any = await db.banners.findOne({ _id: id });
+  if (banner.pic) {
+    const ret: any = await remove({
+      Bucket: 'ridasprod',
+      Key: banner.pic.substr(banner.pic.indexOf('banners')),
+    });
+  }
+
   const del = await db.banners.findOneAndDelete({
     _id: id,
   });
+
   ctx.status = 200;
+  ctx.body = id;
 };
 
 export default { home, create, deleteone, getbanner };

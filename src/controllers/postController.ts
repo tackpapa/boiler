@@ -163,6 +163,17 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const allpost: Controller = async (ctx) => {
+  const { last } = ctx.params;
+  const posts = await db.posts
+    .find({ createdAt: { $lt: last } })
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(30);
+  ctx.status = 200;
+  ctx.body = posts;
+};
+
 const newones: Controller = async (ctx) => {
   const { last } = ctx.params;
   const posts = await db.posts
@@ -187,6 +198,7 @@ export default {
   deleteone,
   likeone,
   newones,
+  allpost,
   dislikeone,
   update,
   findone,

@@ -25,7 +25,12 @@ app
   )
   .use(router.allowedMethods())
   .use(koaHelmet())
-  .use(koaCors())
+  .use(
+    koaCors({
+      origin: 'http://localhost:3001',
+      credentials: true,
+    })
+  )
   .use(router.routes());
 
 function Listening() {
