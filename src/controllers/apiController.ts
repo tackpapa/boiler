@@ -9,6 +9,12 @@ const home: Controller = async (ctx) => {
   ctx.body = { posts, jobs, markets };
 };
 
+const error: Controller = async (ctx) => {
+  // throw new Error('error message');
+  // ctx.body = products;
+  ctx.status = 400;
+};
+
 const hotsearch: Controller = async (ctx) => {
   const words = await db.searches
     .find({ views: { $gt: 1 } })
@@ -137,6 +143,7 @@ const stats: Controller = async (ctx) => {
 export default {
   stats,
   home,
+  error,
   tag,
   hotPosts,
   jobs,

@@ -7,6 +7,7 @@ const router = new Router({
 });
 
 router.get('/home', apiController.home);
+router.get('/error', apiController.error);
 router.get('/hotsearch', apiController.hotsearch);
 router.get('/stats', apiController.stats);
 router.get('/tag/:tag', apiController.tag);
