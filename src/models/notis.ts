@@ -2,7 +2,7 @@ import mongoose, { Schema, Model, Document, ObjectId } from 'mongoose';
 
 export interface Noti {
   from: ObjectId;
-  target: ObjectId;
+  target: ObjectId[];
   isNotice: boolean;
   isRead: boolean;
   type: string;
@@ -23,10 +23,12 @@ const NotiSchema: Schema<NotiDocument> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
-    target: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Users',
-    },
+    target: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users',
+      },
+    ],
     isNotice: Boolean,
     isRead: Boolean,
     type: String,

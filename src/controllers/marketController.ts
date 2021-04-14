@@ -30,7 +30,6 @@ const create: Controller = async (ctx) => {
   }
   if (ctx.request.files.pic.length > 0) {
     const arr = ctx.request.files.pic;
-
     const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {
@@ -49,7 +48,6 @@ const create: Controller = async (ctx) => {
     await Promise.all(promises);
   } else {
     const arr = [ctx.request.files.pic];
-
     const promises = arr.map(async ({ path }: { path: string }, i: number) => {
       const body = sharp(path).resize(200, 200).png();
       var param = {

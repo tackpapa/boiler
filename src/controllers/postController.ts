@@ -163,6 +163,21 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const postpage: Controller = async (ctx) => {
+  const { page } = ctx.params;
+  const row = 15;
+  const skip = (parseInt(page, 10) - 1) * row;
+  const allpost = await db.posts.countDocuments({});
+  const posts = await db.posts
+    .find({})
+    .skip(skip)
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(row);
+  ctx.status = 200;
+  ctx.body = { allpost, posts, page };
+};
+
 const allpost: Controller = async (ctx) => {
   const { last } = ctx.params;
   const posts = await db.posts
@@ -199,6 +214,7 @@ export default {
   likeone,
   newones,
   allpost,
+  postpage,
   dislikeone,
   update,
   findone,

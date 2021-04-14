@@ -24,7 +24,10 @@ const send: Controller = async (ctx) => {
   } else {
     const userto = await db.users.findById(to);
     if (userto) {
-      push(userto, `[채팅] ${((item.from as unknown) as User).name} : ${msg}`);
+      push(
+        [userto],
+        `[채팅] ${((item.from as unknown) as User).name} : ${msg}`
+      );
     }
     console.error;
   }

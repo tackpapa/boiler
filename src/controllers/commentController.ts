@@ -34,7 +34,7 @@ const create: Controller = async (ctx) => {
       const userto = await db.users.findById(`${cmtpush?.author._id}`);
       if (userto) {
         push(
-          userto,
+          [userto],
           `${cmtpush.title} 글에 ${author.name}님이 댓글을 달았습니다.`,
           cmtpush._id,
           postmodel,

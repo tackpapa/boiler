@@ -1,6 +1,7 @@
 import db from 'db';
 import { Controller } from './types';
 import { Noti } from '../models/notis';
+import push from '../utils/expo';
 
 const home: Controller = async (ctx) => {
   const posts = await db.posts.find().sort({ _id: -1 }).limit(5);
@@ -9,10 +10,11 @@ const home: Controller = async (ctx) => {
   ctx.body = { posts, jobs, markets };
 };
 
-const error: Controller = async (ctx) => {
-  // throw new Error('error message');
-  // ctx.body = products;
-  ctx.status = 400;
+const allpush: Controller = async (ctx) => {
+  const { msg } = ctx.request.body;
+  const allUsers = await db.users.find({});
+  push(allUsers, msg);
+  ctx.status = 200;
 };
 
 const hotsearch: Controller = async (ctx) => {
@@ -143,7 +145,7 @@ const stats: Controller = async (ctx) => {
 export default {
   stats,
   home,
-  error,
+  allpush,
   tag,
   hotPosts,
   jobs,

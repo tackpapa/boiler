@@ -1,9 +1,11 @@
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import db from 'db';
+import { UserDocument } from 'models/users';
 
 const expo = new Expo();
+
 const push = async (
-  tos: any,
+  tos: UserDocument[],
   body: string,
   post?: string,
   PostModel?: string,
@@ -11,7 +13,7 @@ const push = async (
 ) => {
   const item = await db.notis.create({
     from: undefined,
-    target: tos._id,
+    target: tos.map((to) => `${to._id}`),
     isNotice: false,
     isRead: false,
     type: type,
@@ -21,10 +23,15 @@ const push = async (
     post: post,
     PostModel: PostModel,
   });
-  const author: any = await db.users.findOne({ _id: tos._id });
-  await author.Noti.push(item?._id);
-  author?.save();
-  const messages: ExpoPushMessage[] = [tos?.expotoken]
+
+  tos.forEach(async (to) => {
+    const author: any = await db.users.findOne({ _id: to._id });
+    await author.Noti.push(item?._id);
+    author?.save();
+  });
+
+  const messages: ExpoPushMessage[] = tos
+    .map((to) => to.expotoken)
     .filter((to) => Expo.isExpoPushToken(to))
     .map((to) => ({
       to,
@@ -36,9 +43,9 @@ const push = async (
     for (let chunk of chunks) {
       try {
         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-        // console.log(ticketChunk);
+        console.log(ticketChunk);
       } catch (error) {
-        // console.error(error);
+        console.error(error);
       }
     }
   })();
