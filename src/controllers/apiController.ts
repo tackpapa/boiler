@@ -12,8 +12,14 @@ const home: Controller = async (ctx) => {
 
 const allpush: Controller = async (ctx) => {
   const { msg } = ctx.request.body;
+
   const allUsers = await db.users.find({});
-  push(allUsers, msg);
+  try {
+    push(allUsers, msg);
+  } catch {
+    console.log(Error);
+  }
+  ctx.body = true;
   ctx.status = 200;
 };
 

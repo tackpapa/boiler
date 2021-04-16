@@ -13,6 +13,7 @@ router.get('/search/:query', JobController.search);
 router.get('/bycategory/:query/:last', JobController.byCategory);
 router.get('/latest/:last', JobController.latest);
 router.get('/alljob/:last', JobController.alljob);
+router.get('/jobpage/:page', JobController.jobpage);
 router.get('/newones/:last', JobController.newones);
 router.post('/update/:id', requireAuth, JobController.update);
 

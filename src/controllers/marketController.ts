@@ -141,6 +141,21 @@ const allmarket: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
+const marketpage: Controller = async (ctx) => {
+  const { page } = ctx.params;
+  const row = 15;
+  const skip = (parseInt(page, 10) - 1) * row;
+  const allpost = await db.markets.countDocuments({});
+  const posts = await db.markets
+    .find({})
+    .skip(skip)
+    .populate('author')
+    .sort({ _id: -1 })
+    .limit(row);
+  ctx.status = 200;
+  ctx.body = { allpost, posts, page };
+};
+
 const newones: Controller = async (ctx) => {
   const { last } = ctx.params;
   const posts = await db.markets
@@ -176,6 +191,7 @@ export default {
   create,
   deleteone,
   allmarket,
+  marketpage,
   update,
   search,
   newones,
