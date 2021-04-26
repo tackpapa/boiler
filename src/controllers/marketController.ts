@@ -97,9 +97,14 @@ const findone: Controller = async (ctx) => {
     .findOne({ _id: id })
     .populate('author')
     .populate('comments');
-  post?.viewUp();
-  ctx.status = 200;
-  ctx.body = post;
+  if (post) {
+    post?.viewUp();
+    ctx.status = 200;
+    ctx.body = post;
+  } else {
+    ctx.status = 404;
+    ctx.body = { id };
+  }
 };
 
 const search: Controller = async (ctx) => {
@@ -181,10 +186,15 @@ const byCategory: Controller = async (ctx) => {
 
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const cola = await db.markets.findOneAndRemove({ _id: id });
-  const lala = db.comments.deleteMany({ post: id }).exec;
+  const item = await db.markets.findOneAndRemove({ _id: id });
+  if (!item) {
+    ctx.status = 400;
+    ctx.body = { id };
+    return;
+  }
+  await db.comments.deleteMany({ post: id }).exec;
   ctx.status = 200;
-  ctx.body = { id: id, category: cola?.category };
+  ctx.body = { id: id, category: item?.category };
 };
 
 export default {
