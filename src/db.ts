@@ -10,14 +10,27 @@ import chats from './models/chats';
 import categorys from './models/categorys';
 import searches from './models/searches';
 import notis from './models/notis';
+import fs from 'fs';
+import path from 'path';
 
 mongoose.set('useCreateIndex', true);
 
-mongoose.connect(process.env.MONGO_URL!, {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-});
+// mongoose.connect(process.env.MONGO_URL!, {
+//   useNewUrlParser: true,
+//   useFindAndModify: false,
+//   useCreateIndex: true,
+// });
+mongoose
+  .connect(process.env.MONGO_URL!, {
+    useNewUrlParser: true,
+    ssl: true,
+    sslValidate: false,
+    sslCA: fs.readFileSync(
+      path.resolve(__dirname, '..', 'rds-combined-ca-bundle.cer')
+    ) as any,
+  })
+  .then(() => console.log('Connection to DB successful'))
+  .catch((err) => console.error(err, 'Error'));
 
 const db = mongoose.connection;
 
