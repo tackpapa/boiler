@@ -15,22 +15,22 @@ import path from 'path';
 
 mongoose.set('useCreateIndex', true);
 
-// mongoose.connect(process.env.MONGO_URL!, {
-//   useNewUrlParser: true,
-//   useFindAndModify: false,
-//   useCreateIndex: true,
-// });
-mongoose
-  .connect(process.env.MONGO_URL!, {
-    useNewUrlParser: true,
-    ssl: true,
-    sslValidate: false,
-    sslCA: fs.readFileSync(
-      path.resolve(__dirname, '..', 'rds-combined-ca-bundle.pem')
-    ) as any,
-  })
-  .then(() => console.log('Connection to DB successful'))
-  .catch((err) => console.error(err, 'Error'));
+mongoose.connect(process.env.MONGO_URL!, {
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+});
+// mongoose
+//   .connect(process.env.MONGO_URL!, {
+//     useNewUrlParser: true,
+//     ssl: true,
+//     sslValidate: false,
+//     sslCA: fs.readFileSync(
+//       path.resolve(__dirname, '..', 'rds-combined-ca-bundle.pem')
+//     ) as any,
+//   })
+//   .then(() => console.log('Connection to DB successful'))
+//   .catch((err) => console.error(err, 'Error'));
 
 const db = mongoose.connection;
 
