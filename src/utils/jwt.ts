@@ -36,6 +36,7 @@ export const requireAuth = (ctx: Context, next: () => void) => {
 };
 export const jwtParser = async (ctx: Context, next: () => Promise<any>) => {
   const token = ctx.header.authorization;
+
   if (token) {
     let user = undefined;
     try {

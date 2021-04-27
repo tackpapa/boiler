@@ -27,45 +27,29 @@ const create: Controller = async (ctx) => {
   if (ctx.request.files.pic === undefined) {
     return (ctx.status = 200), (ctx.body = post);
   }
-  if (ctx.request.files.pic.length > 0) {
-    const arr = ctx.request.files.pic;
-
-    const promises = arr.map(async ({ path }: { path: string }, i: number) => {
-      const body = sharp(path).resize(200, 200).png();
-      var param = {
-        Bucket: 'ridasprod',
-        Key: `jobimage/${item._id + i}`,
-        ACL: 'public-read',
-        Body: body.pipe(PassThrough()),
-        ContentType: 'image/png',
-      };
-      const lala = await upload(param);
-      await (item as any).pics.push(lala.Location);
-      if (i === arr.length - 1) {
-        await item.save();
-      }
-    });
-    await Promise.all(promises);
+  let arr = [];
+  if (Array.isArray(ctx.request.files.pic) === false) {
+    arr = [ctx.request.files.pic];
   } else {
-    const arr = [ctx.request.files.pic];
-
-    const promises = arr.map(async ({ path }: { path: string }, i: number) => {
-      const body = sharp(path).resize(200, 200).png();
-      var param = {
-        Bucket: 'ridasprod',
-        Key: `jobimage/${item._id + i}`,
-        ACL: 'public-read',
-        Body: body.pipe(PassThrough()),
-        ContentType: 'image/png',
-      };
-      const lala = await upload(param);
-      await (item as any).pics.push(lala.Location);
-      if (i === arr.length - 1) {
-        await item.save();
-      }
-    });
-    await Promise.all(promises);
+    arr = ctx.request.files.pic;
   }
+  const promises = arr.map(async ({ path }: { path: string }, i: number) => {
+    const body = sharp(path).resize(400, 400).png();
+    var param = {
+      Bucket: 'ridasprod',
+      Key: `jobimage/${item._id + i}`,
+      ACL: 'public-read',
+      Body: body.pipe(PassThrough()),
+      ContentType: 'image/png',
+    };
+    const lala = await upload(param);
+    await (item as any).pics.push(lala.Location);
+    if (i === arr.length - 1) {
+      await item.save();
+    }
+  });
+  await Promise.all(promises);
+
   const post2 = await db.jobs.findOne({ _id: item._id }).populate('author');
   ctx.status = 200;
   ctx.body = post2;

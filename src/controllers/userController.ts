@@ -132,9 +132,18 @@ const deleteone: Controller = async (ctx) => {
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
   const user = await db.users.findOne({ _id: id }).populate('Noti');
-
   ctx.status = 200;
   ctx.body = user;
+};
+
+const search: Controller = async (ctx) => {
+  const { query } = ctx.params;
+  const user = await db.users
+    .find({ $text: { $search: query } })
+    .sort({ _id: 1 })
+    .limit(10);
+  ctx.status = 200;
+  ctx.body = { data: user, type: 'result' };
 };
 
 const deletenoti: Controller = async (ctx) => {
@@ -225,6 +234,7 @@ export default {
   login,
   deletenoti,
   update,
+  search,
   deleteone,
   alluser,
   tokensave,
