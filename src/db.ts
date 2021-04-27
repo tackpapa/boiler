@@ -26,7 +26,7 @@ mongoose
     ssl: true,
     sslValidate: false,
     sslCA: fs.readFileSync(
-      path.resolve(__dirname, '..', 'rds-combined-ca-bundle.cer')
+      path.resolve(__dirname, '..', 'rds-combined-ca-bundle.pem')
     ) as any,
   })
   .then(() => console.log('Connection to DB successful'))
