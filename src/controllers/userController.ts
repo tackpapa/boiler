@@ -18,7 +18,7 @@ const hash = (_password: any) => {
 
 const login: Controller = async (ctx) => {
   const { code, uri } = ctx.request.body;
-  let uri_1 = 'http://byker.s3-website.ap-northeast-2.amazonaws.com/';
+  let uri_1 = 'http://bykerlogin.s3-website.ap-northeast-2.amazonaws.com/';
   if (uri) {
     uri_1 = uri;
   }
