@@ -63,6 +63,13 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema(
   }
 );
 
+UserSchema.index({
+  email: 'text',
+  name: 'text',
+  cell: 'text',
+  level: 'text',
+});
+
 const model: UserModel = mongoose.model<UserDocument>('Users', UserSchema);
 
 export default model;

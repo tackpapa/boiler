@@ -143,7 +143,7 @@ const search: Controller = async (ctx) => {
     .sort({ _id: 1 })
     .limit(10);
   ctx.status = 200;
-  ctx.body = { data: user, type: 'result' };
+  ctx.body = user;
 };
 
 const deletenoti: Controller = async (ctx) => {
