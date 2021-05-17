@@ -8,6 +8,8 @@ import path from 'path';
 import { jwtParser } from 'utils/jwt';
 import socket from './socket';
 import http from 'http';
+import './utils/cron';
+
 const winston = require('winston');
 const { logger } = require('koa2-winston');
 

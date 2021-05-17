@@ -43,7 +43,6 @@ const push = async (
     for (let chunk of chunks) {
       try {
         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-        console.log(ticketChunk);
       } catch (error) {
         console.error(error);
       }

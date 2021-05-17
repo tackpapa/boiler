@@ -4,7 +4,7 @@ export interface Chat {
   msg: string;
   to: ObjectId;
   from: ObjectId;
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ChatDocument extends Document, Chat {}

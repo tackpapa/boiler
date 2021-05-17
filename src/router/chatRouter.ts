@@ -7,6 +7,7 @@ const router = new Router({
 });
 
 router.post('/send', requireAuth, ChatController.send);
+router.post('/delete', requireAuth, ChatController.delchat);
 router.get('/bringchats/:date?', requireAuth, ChatController.bringchats);
 
 export default router;
