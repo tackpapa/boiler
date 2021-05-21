@@ -16,6 +16,7 @@ const send: Controller = async (ctx) => {
     .populate('from', 'name profilepic createdAt')
     .execPopulate();
   const target = await db.sessions.findOne({ userId: to });
+
   if (target) {
     io.to(target.connectionId).emit('message', {
       type: 'GET_CHAT',
@@ -64,11 +65,6 @@ const bringchats: Controller = async (ctx) => {
 
 const delchat: Controller = async (ctx) => {
   const { _id } = ctx.request.body;
-
-  const del = await db.chats.deleteMany({ to: _id });
-  console.log('보낸사람', del);
-  const del2 = await db.chats.deleteMany({ from: _id });
-  console.log('받은사람', del2);
 
   ctx.body = _id;
   ctx.status = 200;
