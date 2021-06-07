@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import bodyParser from 'koa-body';
 import koaCors from 'koa-cors';
+import cors from '@koa/cors';
 import koaHelmet from 'koa-helmet';
 import router from './router/route';
 import dotenv from 'dotenv';
@@ -19,7 +20,7 @@ dotenv.config({
 
 const app = new Koa();
 
-app
+app.use(cors())
   .use(jwtParser)
   .use(
     logger({
@@ -40,12 +41,12 @@ app
   )
   .use(router.allowedMethods())
   .use(koaHelmet())
-  .use(
-    koaCors({
-      origin: 'http://localhost:3001',
-      credentials: true,
-    })
-  )
+  // .use(
+  //   koaCors({
+  //     origin: 'https://admin.byker.io/admin',
+  //     credentials: true,
+  //   })
+  // )
   .use(router.routes());
 
 function Listening() {

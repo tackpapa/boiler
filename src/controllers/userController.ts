@@ -17,6 +17,7 @@ const hash = (_password: any) => {
 };
 
 const login: Controller = async (ctx) => {
+  console.log("zz")
   const { code, uri } = ctx.request.body;
   let uri_1 = 'http://bykerlogin.s3-website.ap-northeast-2.amazonaws.com/';
   if (uri) {
@@ -68,6 +69,7 @@ const login: Controller = async (ctx) => {
     };
     payload = payload2;
   } else {
+    console.log("만드나")
     const newuser: any = await db.users.create({
       email: json2.kakao_account.email,
       name: json2.properties.nickname,
