@@ -17,7 +17,6 @@ const hash = (_password: any) => {
 };
 
 const login: Controller = async (ctx) => {
-  console.log("zz")
   const { code, uri } = ctx.request.body;
   let uri_1 = 'http://bykerlogin.s3-website.ap-northeast-2.amazonaws.com/';
   if (uri) {
@@ -69,7 +68,6 @@ const login: Controller = async (ctx) => {
     };
     payload = payload2;
   } else {
-    console.log("만드나")
     const newuser: any = await db.users.create({
       email: json2.kakao_account.email,
       name: json2.properties.nickname,
@@ -173,7 +171,7 @@ const tokensave: Controller = async (ctx) => {
 const uploadProfile: Controller = async (ctx) => {
   const user: any = await db.users.findOne({ _id: ctx.state.user._id });
   const { path } = ctx.request.files.pic;
-  const body = sharp(path).resize(200, 200).png();
+  const body = sharp(path).resize(400, 400).png();
 
   const ret: any = await remove({
     Bucket: 'ridasprod',

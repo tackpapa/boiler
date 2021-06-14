@@ -34,7 +34,7 @@ const create: Controller = async (ctx) => {
     arr = ctx.request.files.pic;
   }
   const promises = arr.map(async ({ path }: { path: string }, i: number) => {
-    const body = sharp(path).resize(400, 400).png();
+    const body = sharp(path).resize(800, 800).png();
     var param = {
       Bucket: 'ridasprod',
       Key: `jobimage/${item._id + i}`,
