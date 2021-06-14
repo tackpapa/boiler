@@ -17,7 +17,7 @@ const hash = (_password: any) => {
 };
 
 const login: Controller = async (ctx) => {
-  console.log("zz")
+  
   const { code, uri } = ctx.request.body;
   let uri_1 = 'http://bykerlogin.s3-website.ap-northeast-2.amazonaws.com/';
   if (uri) {
@@ -44,23 +44,26 @@ const login: Controller = async (ctx) => {
     },
   });
   const json2 = await (await promise2).json();
+  console.log(json2)
   const man: any = await db.users
     .findOne({
-      email: json2.kakao_account.email,
+      kakaoId: json2.id,
     })
     .populate('Noti');
 
   if (man) {
     const token = await generateToken({
       _id: man._id,
-      email: man.email,
+      kakaoId: man.kakaoId,
     });
+    console.log(man)
 
     const payload2 = {
       _id: man._id,
       token,
       level: man.level,
       email: man.email,
+      kakaoId: man.kakaoId,
       name: man.name,
       exp: man.exp,
       profilepic: man.profilepic,
@@ -69,21 +72,23 @@ const login: Controller = async (ctx) => {
     };
     payload = payload2;
   } else {
-    console.log("만드나")
+    
     const newuser: any = await db.users.create({
       email: json2.kakao_account.email,
+      kakaoId: json2.id,
       name: json2.properties.nickname,
       profilepic: json2.properties.thumbnail_image,
     });
 
     const token = await generateToken({
       _id: newuser._id,
-      email: newuser.email,
+      kakaoId: newuser.kakaoId,
     });
 
     const payload3 = {
       _id: newuser._id,
       token,
+      kakaoId: newuser.kakaoId,
       email: newuser.email,
       name: newuser.name,
       exp: newuser.exp,

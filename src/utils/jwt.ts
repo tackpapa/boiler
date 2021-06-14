@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 export interface JWT {
   _id: mongoose.Types.ObjectId;
-  email: string;
+  kakaoId: number;
 }
 
 const option = {

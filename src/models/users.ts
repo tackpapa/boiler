@@ -20,9 +20,13 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema(
     email: {
       type: String,
       lowercase: true,
-      unique: true,
-      required: [true, "can't be blank"],
       index: true,
+    },
+    kakaoId:{
+      type: Number,
+      unique: true,
+      index: true,
+      required: [true, "can't be blank"], 
     },
     name: {
       type: String,
@@ -68,6 +72,7 @@ UserSchema.index({
   name: 'text',
   cell: 'text',
   level: 'text',
+  kakaoid: 'number'
 });
 
 const model: UserModel = mongoose.model<UserDocument>('Users', UserSchema);
