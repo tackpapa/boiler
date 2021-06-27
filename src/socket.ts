@@ -9,10 +9,6 @@ const init = (server: Server) => {
   io.on('connection', (socket) => {
     socket.on('createSession', async (userId) => {
       await db.sessions.deleteMany({ userId });
-<<<<<<< HEAD
-=======
-
->>>>>>> 9c369d8c85d742c35f60cf09e45a40d83e494789
       await db.sessions.create({ userId, connectionId: socket.id });
     });
     const deleteSession = async () => {

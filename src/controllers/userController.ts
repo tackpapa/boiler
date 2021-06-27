@@ -43,7 +43,7 @@ const login: Controller = async (ctx) => {
     },
   });
   const json2 = await (await promise2).json();
-  console.log(json2);
+
   const man: any = await db.users
     .findOne({
       kakaoId: json2.id,
@@ -55,7 +55,6 @@ const login: Controller = async (ctx) => {
       _id: man._id,
       kakaoId: man.kakaoId,
     });
-    console.log(man);
 
     const payload2 = {
       _id: man._id,
