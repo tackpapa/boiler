@@ -1,23 +1,23 @@
-import mongoose, { Schema, Model, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export interface Market {
+export interface Tip {
   title: string;
   author: string;
   context: string;
   pics: string[];
   tags: string[];
   views: number;
-  price: number;
+  location: number;
   category: string;
 }
 
-export interface MarketDocument extends Market, Document {
+export interface TipDocument extends Tip, Document {
   //method를 넣는다
   viewUp: () => void;
 }
-export interface MarketModel extends Model<MarketDocument> {}
+export interface TipModel extends Model<TipDocument> {}
 
-const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
+const TipSchema: Schema<TipDocument> = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -27,21 +27,21 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
-    context: String,
-    notice: {
-      type: Boolean,
-      default: false,
-    },
-    category: {
-      type: String,
-      default: 'free',
-    },
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comments',
       },
     ],
+    context: String,
+    category: {
+      type: String,
+      default: 'free',
+    },
+    notice: {
+      type: Boolean,
+      default: false,
+    },
     pics: {
       type: [String],
       default: [],
@@ -50,35 +50,28 @@ const MarketSchema: Schema<MarketDocument> = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    location: String,
     views: {
       type: Number,
       default: 0,
     },
-    price: {
-      type: Number,
-      default: 0,
-    },
-    location: String,
   },
   {
     timestamps: true,
   }
 );
-MarketSchema.index({
+TipSchema.index({
   title: 'text',
   author: 'text',
   tags: 'text',
   context: 'text',
-  price: 'text',
+  location: 'text',
 });
 
-MarketSchema.methods.viewUp = async function () {
+TipSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();
 };
-const model = mongoose.model<MarketDocument, MarketModel>(
-  'Markets',
-  MarketSchema
-);
+const model = mongoose.model<TipDocument, TipModel>('Tips', TipSchema);
 
 export default model;

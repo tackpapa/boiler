@@ -1,23 +1,23 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Model, Document } from 'mongoose';
 
-export interface Job {
+export interface Question {
   title: string;
   author: string;
   context: string;
   pics: string[];
   tags: string[];
   views: number;
-  location: number;
+  price: number;
   category: string;
 }
 
-export interface JobDocument extends Job, Document {
+export interface QuestionDocument extends Question, Document {
   //method를 넣는다
   viewUp: () => void;
 }
-export interface JobModel extends Model<JobDocument> {}
+export interface QuestionModel extends Model<QuestionDocument> {}
 
-const JobSchema: Schema<JobDocument> = new mongoose.Schema(
+const QuestionSchema: Schema<QuestionDocument> = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -27,21 +27,21 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Users',
     },
+    context: String,
+    notice: {
+      type: Boolean,
+      default: false,
+    },
+    category: {
+      type: String,
+      default: 'free',
+    },
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comments',
       },
     ],
-    context: String,
-    category: {
-      type: String,
-      default: 'free',
-    },
-    notice: {
-      type: Boolean,
-      default: false,
-    },
     pics: {
       type: [String],
       default: [],
@@ -50,28 +50,35 @@ const JobSchema: Schema<JobDocument> = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    location: String,
     views: {
       type: Number,
       default: 0,
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
+    location: String,
   },
   {
     timestamps: true,
   }
 );
-JobSchema.index({
+QuestionSchema.index({
   title: 'text',
   author: 'text',
   tags: 'text',
   context: 'text',
-  location: 'text',
+  price: 'text',
 });
 
-JobSchema.methods.viewUp = async function () {
+QuestionSchema.methods.viewUp = async function () {
   this.views += 1;
   this.save();
 };
-const model = mongoose.model<JobDocument, JobModel>('Jobs', JobSchema);
+const model = mongoose.model<QuestionDocument, QuestionModel>(
+  'Questions',
+  QuestionSchema
+);
 
 export default model;

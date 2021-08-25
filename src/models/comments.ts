@@ -25,7 +25,7 @@ const CommentSchema: Schema = new mongoose.Schema(
     PostModel: {
       type: String,
       required: true,
-      enum: ['Market', 'Job', 'Post'],
+      enum: ['Question', 'Tip', 'Post'],
     },
   },
   {

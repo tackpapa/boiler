@@ -6,9 +6,7 @@ import router from './router/route';
 import dotenv from 'dotenv';
 import path from 'path';
 import { jwtParser } from 'utils/jwt';
-import socket from './socket';
 import http from 'http';
-import './utils/cron';
 
 const winston = require('winston');
 const { logger } = require('koa2-winston');
@@ -41,17 +39,10 @@ app
   )
   .use(router.allowedMethods())
   .use(koaHelmet())
-  // .use(
-  //   koaCors({
-  //     origin: 'https://admin.byker.io/admin',
-  //     credentials: true,
-  //   })
-  // )
   .use(router.routes());
 
 function Listening() {
-  console.log(`♥️♥️♥️♥️♥️  listening now at port`, process.env.PORT);
+  console.log(`♥️♥️♥️♥️♥️  Lawyer listening now at port`, process.env.PORT);
 }
 const server = http.createServer(app.callback());
-socket(server);
 server.listen(process.env.PORT, Listening);

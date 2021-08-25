@@ -162,16 +162,6 @@ const deletenoti: Controller = async (ctx) => {
   ctx.body = user;
 };
 
-const tokensave: Controller = async (ctx) => {
-  const { expotoken } = ctx.request.body;
-  const user = await db.users.findByIdAndUpdate(
-    ctx.state.user._id,
-    { expotoken },
-    { new: true }
-  );
-  ctx.status = 200;
-};
-
 const uploadProfile: Controller = async (ctx) => {
   const user: any = await db.users.findOne({ _id: ctx.state.user._id });
   const { path } = ctx.request.files.pic;
@@ -203,19 +193,19 @@ const userprofile: Controller = async (ctx) => {
     .find({ author: ObjectId(userid) })
     .populate('author')
     .exec();
-  const jobs = await db.jobs
+  const tips = await db.tips
     .find({ author: ObjectId(userid) })
     .populate('author')
     .exec();
-  const markets = await db.markets
+  const questions = await db.questions
     .find({ author: ObjectId(userid) })
     .populate('author')
     .exec();
   ctx.status = 200;
   ctx.body = {
     post: posts,
-    job: jobs,
-    market: markets,
+    tip: tips,
+    question: questions,
   };
 };
 
@@ -241,7 +231,6 @@ export default {
   search,
   deleteone,
   alluser,
-  tokensave,
   findone,
   userprofile,
   logout,

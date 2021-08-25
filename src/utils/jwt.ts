@@ -51,7 +51,6 @@ export const jwtParser = async (ctx: Context, next: () => Promise<any>) => {
         userId: `${user._id}`,
       });
       if (session) {
-        ctx.state.socketId = session.connectionId;
       }
     }
   }

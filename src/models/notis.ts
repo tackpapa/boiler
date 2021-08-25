@@ -41,7 +41,7 @@ const NotiSchema: Schema<NotiDocument> = new mongoose.Schema(
     },
     PostModel: {
       type: String,
-      enum: ['Market', 'Job', 'Post'],
+      enum: ['Question', 'Tip', 'Post'],
     },
   },
   {

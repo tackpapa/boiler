@@ -1,4 +1,4 @@
-import mongoose, { ObjectId, Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface User {
   email: string;
@@ -7,8 +7,9 @@ export interface User {
   profilepic: string;
   cell: number;
   liked: string[];
-  expotoken: string;
   Noti: string[];
+  lawyer: Boolean;
+  reviews: string[];
 }
 
 export interface UserDocument extends Document, User {}
@@ -22,15 +23,20 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema(
       lowercase: true,
       index: true,
     },
-    kakaoId:{
+    kakaoId: {
       type: Number,
       unique: true,
       index: true,
-      required: [true, "can't be blank"], 
+      required: [true, "can't be blank"],
     },
     name: {
       type: String,
       required: [true, "can't be blank"],
+    },
+    lawyer: {
+      type: Boolean,
+      index: true,
+      default: false,
     },
     memo: {
       type: String,
@@ -48,13 +54,18 @@ const UserSchema: Schema<UserDocument> = new mongoose.Schema(
         ref: 'Posts',
       },
     ],
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Questions',
+      },
+    ],
     Noti: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Notis',
       },
     ],
-    expotoken: String,
     accessToken: String,
     profilepic: String,
     level: {
@@ -71,8 +82,9 @@ UserSchema.index({
   email: 'text',
   name: 'text',
   cell: 'text',
+  lawyer: 'boolean',
   level: 'text',
-  kakaoid: 'number'
+  kakaoid: 'number',
 });
 
 const model: UserModel = mongoose.model<UserDocument>('Users', UserSchema);

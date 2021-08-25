@@ -2,16 +2,13 @@ import mongoose from 'mongoose';
 import users from './models/users';
 import posts from './models/posts';
 import comments from './models/comments';
-import markets from './models/markets';
+import questions from './models/questions';
 import banners from './models/banners';
 import sessions from './models/sessions';
-import jobs from './models/jobs';
-import chats from './models/chats';
+import tips from './models/tips';
 import categorys from './models/categorys';
 import searches from './models/searches';
 import notis from './models/notis';
-import fs from 'fs';
-import path from 'path';
 
 mongoose.set('useCreateIndex', true);
 
@@ -20,17 +17,6 @@ mongoose.connect(process.env.MONGO_URL!, {
   useFindAndModify: false,
   useCreateIndex: true,
 });
-// mongoose
-//   .connect(process.env.MONGO_URL!, {
-//     useNewUrlParser: true,
-//     ssl: true,
-//     sslValidate: false,
-//     sslCA: fs.readFileSync(
-//       path.resolve(__dirname, '..', 'rds-combined-ca-bundle.pem')
-//     ) as any,
-//   })
-//   .then(() => console.log('Connection to DB successful'))
-//   .catch((err) => console.error(err, 'Error'));
 
 const db = mongoose.connection;
 
@@ -45,11 +31,10 @@ export default {
   comments,
   notis,
   posts,
-  markets,
+  questions,
   sessions,
-  chats,
   banners,
-  jobs,
+  tips,
   categorys,
   searches,
 };

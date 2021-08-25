@@ -7,7 +7,7 @@ import sharp from 'sharp';
 const { PassThrough } = require('stream');
 
 const create: Controller = async (ctx) => {
-  const { title, context, tags, location, category } = ctx.request.body;
+  const { title, context, tags, price, location, category } = ctx.request.body;
   const author = ctx.state.user._id;
   const user = await db.users.findOneAndUpdate(
     { _id: author },
@@ -15,15 +15,16 @@ const create: Controller = async (ctx) => {
   );
   user?.save();
 
-  const item = await db.jobs.create({
+  const item = await db.questions.create({
     title,
     context,
     author,
-    tags,
-    location,
     category,
+    tags,
+    price,
+    location,
   });
-  const post = await db.jobs.findOne({ _id: item._id }).populate('author');
+  const post = await db.questions.findOne({ _id: item._id }).populate('author');
   if (ctx.request.files.pic === undefined) {
     return (ctx.status = 200), (ctx.body = post);
   }
@@ -37,7 +38,7 @@ const create: Controller = async (ctx) => {
     const body = sharp(path).resize(800, 800).png();
     var param = {
       Bucket: 'ridasprod',
-      Key: `jobimage/${item._id + i}`,
+      Key: `questionimage/${item._id + i}`,
       ACL: 'public-read',
       Body: body.pipe(PassThrough()),
       ContentType: 'image/png',
@@ -50,34 +51,37 @@ const create: Controller = async (ctx) => {
   });
   await Promise.all(promises);
 
-  const post2 = await db.jobs.findOne({ _id: item._id }).populate('author');
+  const post2 = await db.questions
+    .findOne({ _id: item._id })
+    .populate('author');
   ctx.status = 200;
   ctx.body = post2;
 };
 
 const update: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const { context, title, tags, location, category } = ctx.request.body;
+  const { context, title, tags, price, location, category } = ctx.request.body;
   const newtag = JSON.parse(tags);
-  const post = await db.jobs.findOneAndUpdate(
+  const author = ctx.state.user._id;
+  const post = await db.questions.findOneAndUpdate(
     { _id: id },
     {
       context: context,
       tags: newtag,
       title: title,
-      location: location,
+      price: price,
       category: category,
+      location: location,
     },
     { new: true }
   );
-
   ctx.status = 200;
   ctx.body = post;
 };
 
 const findone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const post = await db.jobs
+  const post = await db.questions
     .findOne({ _id: id })
     .populate('author')
     .populate('comments');
@@ -91,23 +95,26 @@ const findone: Controller = async (ctx) => {
   }
 };
 
-const byCategory: Controller = async (ctx) => {
-  const { query, last } = ctx.params;
-
-  const post = await db.jobs
-    .find({ category: query })
-    .where('createdAt')
-    .lt(last)
+const search: Controller = async (ctx) => {
+  const { query } = ctx.params;
+  const check = await db.searches.findOne({ query });
+  if (check) {
+    check.viewUp();
+  } else {
+    db.searches.create({ query });
+  }
+  const post = await db.questions
+    .find({ $text: { $search: query } })
     .populate('author')
     .sort({ _id: -1 })
     .limit(10);
   ctx.status = 200;
-  ctx.body = { data: post, type: query };
+  ctx.body = { data: post, type: 'result' };
 };
 
 const latest: Controller = async (ctx) => {
   const { last } = ctx.params;
-  const posts = await db.jobs
+  const posts = await db.questions
     .find({ createdAt: { $lt: last } })
     .populate('author')
     .sort({ _id: -1 })
@@ -116,9 +123,9 @@ const latest: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
-const alljob: Controller = async (ctx) => {
+const allquestion: Controller = async (ctx) => {
   const { last } = ctx.params;
-  const posts = await db.jobs
+  const posts = await db.questions
     .find({ createdAt: { $lt: last } })
     .populate('author')
     .sort({ _id: -1 })
@@ -127,12 +134,12 @@ const alljob: Controller = async (ctx) => {
   ctx.body = posts;
 };
 
-const jobpage: Controller = async (ctx) => {
+const questionpage: Controller = async (ctx) => {
   const { page } = ctx.params;
   const row = 15;
   const skip = (parseInt(page, 10) - 1) * row;
-  const allpost = await db.jobs.countDocuments({});
-  const posts = await db.jobs
+  const allpost = await db.questions.countDocuments({});
+  const posts = await db.questions
     .find({})
     .skip(skip)
     .populate('author')
@@ -144,35 +151,30 @@ const jobpage: Controller = async (ctx) => {
 
 const newones: Controller = async (ctx) => {
   const { last } = ctx.params;
-  const posts = await db.jobs
+  const posts = await db.questions
     .find({ createdAt: { $gt: last } })
     .populate('author')
     .sort({ _id: -1 });
-
   ctx.status = 200;
   ctx.body = posts;
 };
 
-const search: Controller = async (ctx) => {
-  const { query } = ctx.params;
-  const check = await db.searches.findOne({ query });
-  if (check) {
-    check.viewUp();
-  } else {
-    db.searches.create({ query });
-  }
-  const post = await db.jobs
-    .find({ $text: { $search: query } })
+const byCategory: Controller = async (ctx) => {
+  const { query, last } = ctx.params;
+  const post = await db.questions
+    .find({ category: query })
+    .where('createdAt')
+    .lt(last)
     .populate('author')
     .sort({ _id: -1 })
-    .limit(20);
+    .limit(10);
   ctx.status = 200;
-  ctx.body = { data: post, type: 'result' };
+  ctx.body = { data: post, type: query };
 };
 
 const deleteone: Controller = async (ctx) => {
   const { id } = ctx.params;
-  const item = await db.jobs.findOneAndRemove({ _id: id });
+  const item = await db.questions.findOneAndRemove({ _id: id });
   if (!item) {
     ctx.status = 400;
     ctx.body = { id };
@@ -186,12 +188,12 @@ const deleteone: Controller = async (ctx) => {
 export default {
   create,
   deleteone,
-  alljob,
-  jobpage,
+  allquestion,
+  questionpage,
   update,
+  search,
   newones,
   byCategory,
   findone,
-  search,
   latest,
 };
